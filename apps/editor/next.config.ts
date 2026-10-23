@@ -41,6 +41,7 @@ const nextConfig: NextConfig = {
     '@pascal-app/viewer',
     '@pascal-app/core',
     '@pascal-app/editor',
+    '@pascal-app/ifc-converter',
     '@pascal-app/mcp',
     '@pascal-app/plugin-pool',
     '@pascal-app/plugin-bath-space',
