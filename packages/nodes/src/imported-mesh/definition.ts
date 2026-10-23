@@ -2,6 +2,7 @@ import type { NodeDefinition } from '@pascal-app/core'
 import { perNodeGeometryBatchable } from '../shared/node-batch/batchable'
 import { buildImportedMeshFloorplan } from './floorplan'
 import { buildImportedMeshGeometry } from './geometry'
+import { importedMeshParametrics } from './parametrics'
 import { ImportedMeshNode } from './schema'
 
 /** Format-neutral fallback for imported objects without a parametric node. */
@@ -23,10 +24,12 @@ export const importedMeshDefinition: NodeDefinition<typeof ImportedMeshNode> = {
   capabilities: {
     batchable: perNodeGeometryBatchable,
     selectable: { hitVolume: 'bbox' },
+    movable: { axes: ['x', 'y', 'z'], gridSnap: true },
     duplicable: true,
     deletable: true,
     presettable: false,
   },
+  parametrics: importedMeshParametrics,
   geometryKey: (node) => `${node.id}:${node.primitives.length}`,
   geometry: buildImportedMeshGeometry,
   floorplan: buildImportedMeshFloorplan,

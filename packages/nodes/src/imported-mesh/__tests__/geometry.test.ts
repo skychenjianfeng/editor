@@ -116,9 +116,12 @@ describe('buildImportedMeshGeometry', () => {
     expect(disposed).toBe(false)
   })
 
-  test('is selectable and deletable but not movable', () => {
+  test('is selectable, movable and deletable', () => {
     expect(importedMeshDefinition.capabilities.selectable).toBeDefined()
     expect(importedMeshDefinition.capabilities.deletable).toBe(true)
-    expect('movable' in importedMeshDefinition.capabilities).toBe(false)
+    expect(importedMeshDefinition.capabilities.movable).toEqual({
+      axes: ['x', 'y', 'z'],
+      gridSnap: true,
+    })
   })
 })
