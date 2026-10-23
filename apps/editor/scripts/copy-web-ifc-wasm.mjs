@@ -17,10 +17,12 @@ import { fileURLToPath } from 'node:url'
 // looking for the package folder inside any node_modules along the way.
 function findWebIfcDir(startDir) {
   let dir = startDir
-  while (dir && dir !== '/') {
+  while (dir) {
     const candidate = join(dir, 'node_modules', 'web-ifc')
     if (existsSync(join(candidate, 'web-ifc.wasm'))) return candidate
-    dir = resolve(dir, '..')
+    const parent = resolve(dir, '..')
+    if (parent === dir) break
+    dir = parent
   }
   return null
 }
