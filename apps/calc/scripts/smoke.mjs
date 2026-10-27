@@ -1,20 +1,50 @@
 import { chromium } from 'playwright-core'
 
-const url = process.env.CALC_URL ?? 'http://localhost:5179/'
-const browser = await chromium.launch({ channel: 'msedge', headless: true })
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+const baseUrl = new URL(process.env.CALC_URL ?? 'http://localhost:5179')
+baseUrl.pathname = '/'
+baseUrl.search = ''
+baseUrl.hash = ''
+
+function appUrl(path) {
+  return new URL(path, baseUrl).toString()
+}
+
+const browser = await chromium.launch({ channel: 'chrome', headless: true })
+const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+const page = await context.newPage()
 
 try {
-  await page.goto(url, { waitUntil: 'domcontentloaded' })
-  await page.getByText('安全计算工作台').first().waitFor({ timeout: 15000 })
-  await page.getByText('扣件式脚手架').first().waitFor()
+  const loginResponse = await page.goto(appUrl('/login'), {
+    waitUntil: 'domcontentloaded',
+  })
+  if (loginResponse?.status() !== 200) {
+    throw new Error(`GET /login returned ${loginResponse?.status() ?? 'no response'}`)
+  }
+  await page.locator('#root').waitFor({ state: 'attached', timeout: 15_000 })
 
-  await page.getByRole('button', { name: '平面', exact: true }).click()
-  await page.getByText('剪刀撑', { exact: true }).click()
-  await page.getByText('仅不满足').click()
+  const workspaceResponse = await page.goto(appUrl('/workspace'), {
+    waitUntil: 'domcontentloaded',
+  })
+  if (workspaceResponse?.status() !== 200) {
+    throw new Error(
+      `GET /workspace returned ${workspaceResponse?.status() ?? 'no response'}`,
+    )
+  }
+  await page.waitForURL(
+    (url) => url.pathname === '/login' && url.searchParams.get('next') === '/workspace',
+    { timeout: 15_000 },
+  )
 
-  await page.screenshot({ path: 'smoke-1440.png', fullPage: false })
-  console.log('smoke ok: header / module tree / view switch / layer toggle / filter')
+  const meResponse = await context.request.get(appUrl('/api/v1/auth/me'), {
+    failOnStatusCode: false,
+  })
+  if (meResponse.status() !== 401) {
+    throw new Error(`anonymous GET /api/v1/auth/me returned ${meResponse.status()}`)
+  }
+
+  console.log(
+    'smoke ok: login=200 root=present workspace-fallback=200 redirect=/login?next=/workspace anonymous-me=401',
+  )
 } finally {
   await browser.close()
 }

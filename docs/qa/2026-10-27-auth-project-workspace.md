@@ -97,6 +97,38 @@
 - `python manage.py check`：通过，0 issues。
 - `python manage.py makemigrations --check`：通过，`No changes detected`。
 
+## 验收收口
+
+使用唯一临时 SQLite
+`artifacts/auth-workspace-qa/qa-smoke-20261027-214821-582.sqlite3`，迁移后启动
+Django `127.0.0.1:8001` 和 Vite `127.0.0.1:5179`。ready 检测实际轮询了
+匿名 `GET /api/v1/auth/me`（401）和 `GET /login`（200，含 `id="root"`），
+未只检查端口。当前次命令与结果：
+
+```powershell
+$env:CALC_URL = 'http://127.0.0.1:5179'
+npm --prefix apps/calc run test:e2e
+```
+
+```text
+smoke ok: login=200 root=present workspace-fallback=200 redirect=/login?next=/workspace anonymous-me=401
+```
+
+同一临时服务上依次得到：
+
+- `npm --prefix apps/calc test`：13 个测试文件、30 个测试通过。
+- `npm --prefix apps/calc run check-types`：通过。
+- `npm --prefix apps/calc run build`：通过；主 JS chunk 871.79 kB
+  （gzip 275.73 kB），仍只有 Vite 的大 chunk 警告。
+
+可重复的真实浏览器脚本为
+`E:\Civil-Engineering\PmStudio\scripts\verify-calc-auth-workspace.py`。脚本接受
+`--base-url`（默认 `http://127.0.0.1:5179`），不启动服务，只使用内存随机账号。
+本次在相同临时服务上执行并通过，生成唯一结果
+`artifacts/auth-workspace-qa/auth_workspace_e2e_1793108972-dd22f940_result.json`
+和 `artifacts/auth-workspace-qa/shots/verify-1793108972-dd22f940/` 下的截图。
+本次执行仍是原有 30 项前端与 296 项后端边界的补充浏览器回归，不另增或重复统计测试数。
+
 ## 清理与边界
 
 - 只终止本次启动的 Django/Vite 进程树。

@@ -1221,7 +1221,7 @@ with sync_playwright() as p:
 
 脚本还必须用第二个用户验证不可见第一个用户的项目，并截图到 `artifacts/calc-auth-workspace/`。
 
-- [ ] **Step 3: 扩展 smoke 测试**
+- [x] **Step 3: 扩展 smoke 测试**
 
 `apps/calc/scripts/smoke.mjs` 至少检查：
 
@@ -1240,7 +1240,7 @@ python manage.py check
 
 Expected: all tests PASS；无遗漏迁移；system check 0 issues。
 
-- [ ] **Step 5: 前端全量**
+- [x] **Step 5: 前端全量**
 
 ```powershell
 cd apps/calc
