@@ -79,7 +79,41 @@ function assertBrowserClean() {
 }
 
 let qaProjectId
-let devLoginSuccessMessage
+let qaProjectName
+let qaProjectNeedsCleanup = false
+let successMessage
+
+async function cleanupQaProject() {
+  if (!qaProjectNeedsCleanup) return
+
+  let projectId = qaProjectId
+  if (!projectId && qaProjectName) {
+    const searchResponse = await context.request.get(
+      appUrl(`/api/v1/projects?limit=200&search=${encodeURIComponent(qaProjectName)}`),
+    )
+    if (searchResponse.status() !== 200) {
+      throw new Error(
+        `cleanup GET /api/v1/projects returned ${searchResponse.status()}`,
+      )
+    }
+    const searchBody = await searchResponse.json()
+    const matches = searchBody.projects.filter((project) => project.name === qaProjectName)
+    if (matches.length > 1) {
+      throw new Error(`cleanup found ${matches.length} projects with the unique QA name`)
+    }
+    projectId = matches[0]?.project_id
+  }
+
+  if (!projectId) return
+  const deleteResponse = await context.request.delete(
+    appUrl(`/api/v1/projects/${projectId}`),
+    { headers: { 'X-CSRFToken': await csrfToken() } },
+  )
+  if (deleteResponse.status() !== 204 && deleteResponse.status() !== 404) {
+    throw new Error(`cleanup DELETE /api/v1/projects returned ${deleteResponse.status()}`)
+  }
+  qaProjectNeedsCleanup = false
+}
 
 try {
   const loginResponse = await page.goto(appUrl('/login'), {
@@ -101,6 +135,20 @@ try {
     await page.waitForURL((url) => url.pathname === '/workspace', { timeout: 15_000 })
     await waitForBrand('/workspace')
     await waitForWorkspaceRoute('/workspace', '项目工作台', '工作台')
+    const desktopNavigation = page.getByRole('navigation', {
+      name: '工作台目录',
+      exact: true,
+    })
+    await desktopNavigation.waitFor()
+    const desktopNavigationBox = await desktopNavigation.boundingBox()
+    if (
+      !desktopNavigationBox ||
+      Math.abs(desktopNavigationBox.width - 232) > 1
+    ) {
+      throw new Error(
+        `desktop directory width was ${desktopNavigationBox?.width ?? 'missing'}px, expected 232px ±1px`,
+      )
+    }
     await assertNoHorizontalOverflow('desktop /workspace')
 
     await page.getByRole('link', { name: '项目管理', exact: true }).click()
@@ -116,70 +164,119 @@ try {
     await page.getByRole('link', { name: '工作台', exact: true }).click()
     await waitForWorkspaceRoute('/workspace', '项目工作台', '工作台')
 
-    const projectName = `QA 玄构天枢 ${Date.now()} ${randomUUID().slice(0, 8)}`
-    const createResponse = await context.request.post(appUrl('/api/v1/projects'), {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': await csrfToken(),
-      },
-      data: { name: projectName, region: '全国', status: 'preparing' },
-    })
+    await page.getByRole('link', { name: '项目管理', exact: true }).click()
+    await waitForWorkspaceRoute('/workspace/projects', '项目管理', '项目管理')
+
+    qaProjectName = `QA 玄构天枢 ${Date.now()} ${randomUUID().slice(0, 8)}`
+    qaProjectNeedsCleanup = true
+    await page.getByRole('button', { name: '新建项目', exact: true }).click()
+    const createDialog = page.getByRole('dialog', { name: '新建项目', exact: true })
+    await createDialog.waitFor()
+    await createDialog.getByLabel('项目名称').fill(qaProjectName)
+    await createDialog.getByLabel('项目地区').selectOption('全国')
+    await createDialog.getByLabel('项目状态').selectOption('preparing')
+    const createResponsePromise = page.waitForResponse(
+      (response) =>
+        response.request().method() === 'POST' &&
+        new URL(response.url()).pathname === '/api/v1/projects',
+    )
+    await createDialog.getByRole('button', { name: '仅创建', exact: true }).click()
+    const createResponse = await createResponsePromise
     if (createResponse.status() !== 201) {
-      throw new Error(`POST /api/v1/projects returned ${createResponse.status()}`)
+      throw new Error(
+        `UI create POST /api/v1/projects returned ${createResponse.status()}`,
+      )
     }
-    const project = await createResponse.json()
-    if (typeof project.project_id !== 'string') {
+    const createdProject = await createResponse.json()
+    if (typeof createdProject.project_id !== 'string') {
       throw new Error('created QA project did not include project_id')
     }
-    qaProjectId = project.project_id
+    qaProjectId = createdProject.project_id
+    await createDialog.waitFor({ state: 'detached', timeout: 15_000 })
 
-    const updateResponse = await context.request.patch(
-      appUrl(`/api/v1/projects/${qaProjectId}`),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': await csrfToken(),
-        },
-        data: {
-          name: projectName,
-          region: '上海',
-          status: 'calculating',
-        },
-      },
+    const createdRow = page.getByRole('row').filter({ hasText: qaProjectName })
+    await createdRow.waitFor()
+    await createdRow.getByText('全国', { exact: true }).waitFor()
+    await createdRow.getByText('筹备中', { exact: true }).waitFor()
+
+    await createdRow
+      .getByRole('button', { name: `更多操作 ${qaProjectName}`, exact: true })
+      .click()
+    await page.getByRole('menuitem', { name: '编辑项目', exact: true }).click()
+    const editDialog = page.getByRole('dialog', { name: '编辑项目', exact: true })
+    await editDialog.waitFor()
+    await editDialog.getByLabel('项目地区').selectOption('上海')
+    await editDialog.getByLabel('项目状态').selectOption('calculating')
+    const updateResponsePromise = page.waitForResponse(
+      (response) =>
+        response.request().method() === 'PATCH' &&
+        new URL(response.url()).pathname === `/api/v1/projects/${qaProjectId}`,
     )
+    await editDialog.getByRole('button', { name: '保存修改', exact: true }).click()
+    const updateResponse = await updateResponsePromise
     if (updateResponse.status() !== 200) {
-      throw new Error(`PATCH /api/v1/projects returned ${updateResponse.status()}`)
+      throw new Error(
+        `UI edit PATCH /api/v1/projects returned ${updateResponse.status()}`,
+      )
     }
     const updatedProject = await updateResponse.json()
     if (updatedProject.region !== '上海' || updatedProject.status !== 'calculating') {
       throw new Error('updated QA project did not reflect the requested values')
     }
+    await editDialog.waitFor({ state: 'detached', timeout: 15_000 })
 
-    const readResponse = await context.request.get(
-      appUrl(`/api/v1/projects/${qaProjectId}`),
+    const readResponsePromise = page.waitForResponse(
+      (response) => {
+        const url = new URL(response.url())
+        return (
+          response.request().method() === 'GET' &&
+          url.pathname === '/api/v1/projects' &&
+          url.searchParams.get('search') === qaProjectName
+        )
+      },
     )
-    if (readResponse.status() !== 200) {
-      throw new Error(`GET /api/v1/projects/:id returned ${readResponse.status()}`)
-    }
-    const readProject = await readResponse.json()
-    if (readProject.project_id !== qaProjectId || readProject.status !== 'calculating') {
-      throw new Error('read QA project did not match the updated record')
-    }
+    await page.getByLabel('搜索项目').fill(qaProjectName)
+    await readResponsePromise
+    const editedRow = page.getByRole('row').filter({ hasText: qaProjectName })
+    await editedRow.waitFor()
+    await editedRow.getByText('上海', { exact: true }).waitFor()
+    await editedRow.getByText('计算中', { exact: true }).waitFor()
 
-    const calcResponse = await page.goto(appUrl(`/projects/${qaProjectId}/calc`), {
-      waitUntil: 'networkidle',
-    })
-    if (calcResponse?.status() !== 200) {
-      throw new Error(`GET project calc returned ${calcResponse?.status() ?? 'no response'}`)
-    }
+    await editedRow
+      .getByRole('button', { name: `进入计算 ${qaProjectName}`, exact: true })
+      .click()
     const expectedCalcPath = `/projects/${qaProjectId}/calc`
-    const actualCalcPath = new URL(page.url()).pathname
-    if (actualCalcPath !== expectedCalcPath) {
+    await page.waitForURL((url) => url.pathname === expectedCalcPath, {
+      timeout: 15_000,
+    })
+    await waitForBrand(expectedCalcPath)
+
+    await page.goBack({ waitUntil: 'networkidle' })
+    await waitForWorkspaceRoute('/workspace/projects', '项目管理', '项目管理')
+    const rowForDeletion = page.getByRole('row').filter({ hasText: qaProjectName })
+    await rowForDeletion.waitFor()
+    await rowForDeletion
+      .getByRole('button', { name: `更多操作 ${qaProjectName}`, exact: true })
+      .click()
+    await page.getByRole('menuitem', { name: '删除项目', exact: true }).click()
+    const deleteDialog = page.getByRole('alertdialog')
+    await deleteDialog.waitFor()
+    const deleteResponsePromise = page.waitForResponse(
+      (response) =>
+        response.request().method() === 'DELETE' &&
+        new URL(response.url()).pathname === `/api/v1/projects/${qaProjectId}`,
+    )
+    await deleteDialog.getByRole('button', { name: '确认删除', exact: true }).click()
+    const deleteResponse = await deleteResponsePromise
+    if (deleteResponse.status() !== 204) {
       throw new Error(
-        `project calc navigation ended at ${actualCalcPath}, expected ${expectedCalcPath}`,
+        `UI delete DELETE /api/v1/projects returned ${deleteResponse.status()}`,
       )
     }
-    await waitForBrand(expectedCalcPath)
+    qaProjectNeedsCleanup = false
+    qaProjectId = undefined
+    await deleteDialog.waitFor({ state: 'detached', timeout: 15_000 })
+    await rowForDeletion.waitFor({ state: 'detached', timeout: 15_000 })
 
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto(appUrl('/workspace'), { waitUntil: 'networkidle' })
@@ -195,6 +292,20 @@ try {
     }
     await assertNoHorizontalOverflow('mobile /workspace with directory open')
 
+    await mobileDirectory
+      .getByRole('button', { name: 'Close', exact: true })
+      .click()
+    await mobileDirectory.waitFor({ state: 'detached', timeout: 15_000 })
+    await page.getByRole('heading', { name: '项目工作台', exact: true }).waitFor()
+
+    await page.getByRole('button', { name: '打开工作台目录', exact: true }).click()
+    await mobileDirectory.waitFor()
+    await page.keyboard.press('Escape')
+    await mobileDirectory.waitFor({ state: 'detached', timeout: 15_000 })
+    await page.getByRole('heading', { name: '项目工作台', exact: true }).waitFor()
+
+    await page.getByRole('button', { name: '打开工作台目录', exact: true }).click()
+    await mobileDirectory.waitFor()
     await mobileDirectory.getByRole('link', { name: '系统设置', exact: true }).click()
     await page.waitForURL((url) => url.pathname === '/workspace/settings', {
       timeout: 15_000,
@@ -204,8 +315,8 @@ try {
     await assertNoHorizontalOverflow('mobile /workspace/settings')
     assertBrowserClean()
 
-    devLoginSuccessMessage =
-      'smoke ok: dev-login=prefilled routes=4 active=desktop mobile-drawer=open+close viewport=1440+390 overflow=none console-errors=0 qa-project=crud+calc+deleted'
+    successMessage =
+      'smoke ok: dev-login=prefilled routes=4 active=desktop desktop-nav=232px mobile-close=button+escape+navigation viewport=1440+390 overflow=none console-errors=0 qa-project=ui-crud+calc+ui-deleted cleanup=finally'
   } else {
     const workspaceResponse = await page.goto(appUrl('/workspace'), {
       waitUntil: 'domcontentloaded',
@@ -227,23 +338,15 @@ try {
       throw new Error(`anonymous GET /api/v1/auth/me returned ${meResponse.status()}`)
     }
 
-    console.log(
-      'smoke ok: login=200 root=present workspace-fallback=200 redirect=/login?next=/workspace anonymous-me=401',
-    )
+    successMessage =
+      'smoke ok: login=200 root=present workspace-fallback=200 redirect=/login?next=/workspace anonymous-me=401'
   }
 } finally {
   try {
-    if (qaProjectId) {
-      const deleteResponse = await context.request.delete(
-        appUrl(`/api/v1/projects/${qaProjectId}`),
-        { headers: { 'X-CSRFToken': await csrfToken() } },
-      )
-      if (deleteResponse.status() !== 204) {
-        throw new Error(`DELETE /api/v1/projects returned ${deleteResponse.status()}`)
-      }
-      if (devLoginSuccessMessage) console.log(devLoginSuccessMessage)
-    }
+    await cleanupQaProject()
   } finally {
     await browser.close()
   }
 }
+
+if (successMessage) console.log(successMessage)

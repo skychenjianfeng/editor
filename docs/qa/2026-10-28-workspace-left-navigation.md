@@ -8,7 +8,8 @@
 - 后端：`http://127.0.0.1:8001`
 - 浏览器：本机 Google Chrome，Playwright，headless
 - 数据：使用当前默认数据库与 Git 忽略的 `apps/calc/.env.local`；验收创建的唯一项目在脚本结束时删除
-- 范围：工作台目录路由、桌面选中态、移动抽屉、横向溢出、项目 CRUD 与计算页入口；未改后端或计算逻辑
+- 范围：工作台目录路由、桌面选中态、移动抽屉、横向溢出、项目管理 UI CRUD
+  与计算页入口；未改后端或计算逻辑
 
 ## 目录与路由
 
@@ -28,9 +29,13 @@
 ## 响应式检查
 
 - 1440x900：登录后的 `/workspace` 根页无横向溢出，桌面目录可见。
+- 1440x900：桌面目录 `navigation` 的 Playwright `boundingBox().width` 为 232px，
+  自动化允许 1px 的浮点误差。
 - 390x844：显示“打开工作台目录”按钮；点击后出现名称为“工作台目录”的 dialog。
 - 移动抽屉左边缘与视口对齐，宽度不超过 `86vw`。
-- 在抽屉内点击“系统设置”后进入 `/workspace/settings`，标题出现，dialog 从 DOM 移除。
+- 移动抽屉验证三条独立关闭路径：点击 dialog 内可访问名称为 `Close` 的关闭控件；
+  按 `Escape`；以及在抽屉内导航到“系统设置”。每条路径均断言 dialog detached，
+  导航路径同时断言进入 `/workspace/settings` 且页面标题出现。
 - 390x844 下抽屉关闭、抽屉打开及设置页均满足
   `max(html.scrollWidth, body.scrollWidth) <= window.innerWidth`，无根页面横向溢出。
 - 开发登录目标流程的浏览器 `console error` 为 0，`pageerror` 为 0。
@@ -39,13 +44,21 @@
 
 ## CRUD 与计算入口回归
 
-浏览器 smoke 通过真实登录会话完成：
+浏览器 smoke 在 `/workspace/projects` 通过真实项目管理 UI 完成：
 
-1. `POST /api/v1/projects` 创建临时项目。
-2. `GET /api/v1/projects/:id` 读取项目。
-3. `PATCH /api/v1/projects/:id` 将地区更新为“上海”、状态更新为“计算中”，并核对响应。
-4. 打开 `/projects/:id/calc`，核对 HTTP 200、最终 URL 和品牌标识，确认计算页入口未回归。
-5. 脚本结束时通过 `DELETE /api/v1/projects/:id` 删除临时项目并核对 204。
+1. 点击“新建项目”，在“新建项目”dialog 填写唯一 QA 项目名称，选择“全国”和
+   “筹备中”，点击“仅创建”；等待创建响应、dialog 关闭，并核对项目表新行的可见结果。
+2. 在“搜索项目”输入唯一名称，等待管理页按该条件返回，并核对项目表可见结果。
+3. 通过该项目行的“更多操作”菜单打开“编辑项目”dialog，改为“上海”和“计算中”；
+   保存后核对 dialog 关闭，并在项目表行中看到更新后的地区与状态。
+4. 点击该项目行内“进入计算”，核对最终地址为 `/projects/:id/calc` 和品牌标识，
+   确认计算页入口未回归；随后返回项目管理页。
+5. 通过同一项目行的“更多操作”菜单选择“删除项目”，在确认 alert dialog 中点击
+   “确认删除”，核对删除响应及该项目行从列表中移除。
+
+临时项目清理位于 smoke 的 `finally`：正常路径以 UI 删除后不再重复删除；若中途失败，
+脚本使用响应中记录的唯一项目 ID 清理，若尚未拿到 ID，则按唯一项目名称精确查询后清理。
+清理不是 UI CRUD 验收的替代。
 
 本次未执行新的计算，也未改变公式、方案或结果契约。
 
@@ -56,9 +69,11 @@
 - `npm --prefix apps/calc run build`：通过；主 JS chunk 913.54 kB（gzip 288.59 kB），
   Vite 仍报告大于 500 kB 的既存 chunk 体积警告。
 - 开发登录 smoke：
-  `smoke ok: dev-login=prefilled routes=4 active=desktop mobile-drawer=open+close viewport=1440+390 overflow=none console-errors=0 qa-project=crud+calc+deleted`
+  `smoke ok: dev-login=prefilled routes=4 active=desktop desktop-nav=232px mobile-close=button+escape+navigation viewport=1440+390 overflow=none console-errors=0 qa-project=ui-crud+calc+ui-deleted cleanup=finally`
 - 普通 smoke：
   `smoke ok: login=200 root=present workspace-fallback=200 redirect=/login?next=/workspace anonymous-me=401`
+- 默认 SQLite 只读复核：`calc_runs_scaffoldproject` 中名称匹配
+  `QA 玄构天枢%` 的项目数为 0。
 
 ## 功能边界
 
