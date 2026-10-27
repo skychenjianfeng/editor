@@ -22,17 +22,17 @@ export function TopBar({
   onSchemes: () => void
 }) {
   return (
-    <header className="flex h-12 shrink-0 items-center gap-3 border-b border-[color:var(--color-line)] bg-[color:var(--color-panel)] px-3">
-      <div className="flex items-center gap-2 pr-3">
+    <header className="flex h-12 shrink-0 items-center gap-3 overflow-x-auto border-b border-[color:var(--color-line)] bg-[color:var(--color-panel)] px-3">
+      <div className="flex shrink-0 items-center gap-2 pr-3">
         <div className="grid h-6 w-6 place-items-center rounded bg-[color:var(--color-ink)] text-[10px] font-bold text-white">
           PM
         </div>
         <span className="text-[13px] font-semibold tracking-wide">安全计算工作台</span>
       </div>
 
-      <div className="h-4 w-px bg-[color:var(--color-line)]" />
+      <div className="h-4 w-px shrink-0 bg-[color:var(--color-line)]" />
 
-      <nav className="flex items-center gap-1 text-[12px] text-[color:var(--color-ink-2)]">
+      <nav className="flex shrink-0 items-center gap-1 text-[12px] text-[color:var(--color-ink-2)]">
         <span className="max-w-[180px] truncate rounded px-1.5 py-0.5 hover:bg-black/5">
           {schemeName ?? '未保存方案'}
         </span>
@@ -42,7 +42,7 @@ export function TopBar({
         </span>
       </nav>
 
-      <div className="ml-auto flex items-center gap-2">
+      <div className="ml-auto flex shrink-0 items-center gap-2">
         <div
           className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] ${
             dirty ? 'bg-[#fff7e6] text-[#a35c00]' : 'bg-[#edfcf4] text-[#1a7f4b]'

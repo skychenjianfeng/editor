@@ -6,7 +6,7 @@ afterEach(cleanup)
 
 describe('TopBar', () => {
   it('显示真实模块名与计算结果总数', () => {
-    render(
+    const { container } = render(
       <TopBar
         dirty={false}
         moduleTitle="高处作业吊篮"
@@ -23,5 +23,6 @@ describe('TopBar', () => {
     expect(screen.getByText('已计算 · 24 项')).toBeInTheDocument()
     expect(screen.getByText('本地 API')).toBeInTheDocument()
     expect(screen.queryByText(/12ms/)).not.toBeInTheDocument()
+    expect(container.querySelector('header')).toHaveClass('overflow-x-auto')
   })
 })
