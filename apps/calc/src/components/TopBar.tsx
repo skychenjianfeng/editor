@@ -1,4 +1,5 @@
 import { ChevronRight, Download, FolderKanban, History, Play, Table2, Zap } from 'lucide-react'
+import { BRAND_MARK, BRAND_NAME } from '../branding'
 
 export function TopBar({
   dirty,
@@ -25,9 +26,9 @@ export function TopBar({
     <header className="flex h-12 shrink-0 items-center gap-3 overflow-x-auto border-b border-[color:var(--color-line)] bg-[color:var(--color-panel)] px-3">
       <div className="flex shrink-0 items-center gap-2 pr-3">
         <div className="grid h-6 w-6 place-items-center rounded bg-[color:var(--color-ink)] text-[10px] font-bold text-white">
-          PM
+          {BRAND_MARK}
         </div>
-        <span className="text-[13px] font-semibold tracking-wide">安全计算工作台</span>
+        <span className="text-[13px] font-semibold tracking-wide">{BRAND_NAME}</span>
       </div>
 
       <div className="h-4 w-px shrink-0 bg-[color:var(--color-line)]" />

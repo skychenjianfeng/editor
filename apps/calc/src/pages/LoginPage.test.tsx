@@ -51,6 +51,7 @@ describe('LoginPage', () => {
     vi.stubGlobal('fetch', fetchMock)
 
     renderLogin('/projects/11111111-1111-4111-8111-111111111111/calc')
+    expect(screen.getByText('玄构天枢')).toBeInTheDocument()
     fireEvent.change(screen.getByLabelText('邮箱'), {
       target: { value: 'user@example.com' },
     })

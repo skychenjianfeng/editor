@@ -19,6 +19,7 @@ describe('TopBar', () => {
     )
 
     expect(screen.getByText('高处作业吊篮')).toBeInTheDocument()
+    expect(screen.getByText('玄构天枢')).toBeInTheDocument()
     expect(screen.getByText('北立面吊篮')).toBeInTheDocument()
     expect(screen.getByText('已计算 · 24 项')).toBeInTheDocument()
     expect(screen.getByText('本地 API')).toBeInTheDocument()

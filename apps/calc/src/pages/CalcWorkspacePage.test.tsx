@@ -79,7 +79,7 @@ describe('CalcWorkspacePage', () => {
 
   it('keeps the module tree, parameters, and results layout', async () => {
     renderPage()
-    expect(await screen.findByText('安全计算工作台')).toBeInTheDocument()
+    expect(await screen.findByText('玄构天枢')).toBeInTheDocument()
     expect(screen.getByText('扣件式脚手架')).toBeInTheDocument()
     expect(await screen.findByText('扣件式脚手架（品茗双立杆）')).toBeInTheDocument()
     expect(screen.getByText('立杆纵距 la')).toBeInTheDocument()

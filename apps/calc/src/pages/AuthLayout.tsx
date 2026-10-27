@@ -2,6 +2,7 @@ import { FileCheck2, Ruler, ShieldCheck } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { BRAND_MARK, BRAND_NAME } from '../branding'
 
 export function AuthLayout({
   mode,
@@ -33,10 +34,10 @@ export function AuthLayout({
             className="inline-flex items-center gap-3"
           >
             <span className="grid size-10 place-items-center rounded-lg bg-[#d9f99d] text-sm font-black text-[#173c32]">
-              PM
+              {BRAND_MARK}
             </span>
             <span>
-              <span className="block text-sm font-semibold tracking-[0.18em]">PM STUDIO</span>
+              <span className="block text-sm font-semibold tracking-[0.18em]">{BRAND_NAME}</span>
               <span className="mt-0.5 block text-xs text-white/55">结构与脚手架安全计算</span>
             </span>
           </Link>
