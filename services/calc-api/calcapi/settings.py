@@ -1,11 +1,37 @@
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("CALC_SECRET_KEY", "dev-only-not-for-production")
 DEBUG = os.environ.get("CALC_DEBUG", "1") == "1"
-ALLOWED_HOSTS = os.environ.get("CALC_ALLOWED_HOSTS", "*").split(",")
+
+secret_key = os.environ.get("CALC_SECRET_KEY")
+allowed_hosts_value = os.environ.get("CALC_ALLOWED_HOSTS")
+
+if DEBUG:
+    SECRET_KEY = secret_key or "dev-only-not-for-production"
+    ALLOWED_HOSTS = [
+        host.strip()
+        for host in (allowed_hosts_value or "*").split(",")
+        if host.strip()
+    ]
+else:
+    if not secret_key:
+        raise ImproperlyConfigured(
+            "CALC_SECRET_KEY must be set when CALC_DEBUG is not 1"
+        )
+    ALLOWED_HOSTS = [
+        host.strip()
+        for host in (allowed_hosts_value or "").split(",")
+        if host.strip()
+    ]
+    if not ALLOWED_HOSTS:
+        raise ImproperlyConfigured(
+            "CALC_ALLOWED_HOSTS must list at least one host when CALC_DEBUG is not 1"
+        )
+    SECRET_KEY = secret_key
 
 INSTALLED_APPS = [
     "django.contrib.auth",
@@ -16,6 +42,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "calcapi.middleware.DevCorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -41,9 +69,13 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+            "NAME": os.environ.get("CALC_DB_NAME") or BASE_DIR / "db.sqlite3",
         }
     }
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "same-origin"
+X_FRAME_OPTIONS = "DENY"
 
 LANGUAGE_CODE = "zh-hans"
 TIME_ZONE = "Asia/Shanghai"

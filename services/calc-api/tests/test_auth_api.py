@@ -3,6 +3,7 @@ import os
 
 import pytest
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError
 from django.test import Client
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "calcapi.settings")
@@ -103,6 +104,55 @@ def test_register_rejects_weak_password(browser_client):
     assert response.status_code == 400
     assert response.json()["detail"] == "注册信息有误"
     assert "password" in response.json()["errors"]
+
+
+@pytest.mark.django_db
+def test_register_rejects_invalid_email(browser_client):
+    response = csrf_post(
+        browser_client,
+        "/api/v1/auth/register",
+        {
+            "email": "invalid email@example.com",
+            "password": "Strong-pass-2026",
+            "password_confirm": "Strong-pass-2026",
+        },
+    )
+
+    assert response.status_code == 400
+    assert response.json()["errors"]["email"] == ["请输入有效邮箱"]
+
+
+@pytest.mark.django_db
+def test_register_returns_duplicate_email_when_save_races(
+    browser_client, monkeypatch
+):
+    user_model = get_user_model()
+
+    def raise_integrity_error(*args, **kwargs):
+        raise IntegrityError("duplicate email")
+
+    monkeypatch.setattr(user_model, "save", raise_integrity_error)
+    response = csrf_post(
+        browser_client,
+        "/api/v1/auth/register",
+        {
+            "email": "race@example.com",
+            "password": "Strong-pass-2026",
+            "password_confirm": "Strong-pass-2026",
+        },
+    )
+
+    assert response.status_code == 400
+    assert response.json()["errors"]["email"] == ["该邮箱已注册"]
+
+
+def test_responses_include_security_headers(browser_client):
+    response = browser_client.get("/api/v1/auth/csrf")
+
+    assert response.status_code == 200
+    assert response.headers["X-Content-Type-Options"] == "nosniff"
+    assert response.headers["X-Frame-Options"] == "DENY"
+    assert response.headers["Referrer-Policy"] == "same-origin"
 
 
 @pytest.mark.django_db

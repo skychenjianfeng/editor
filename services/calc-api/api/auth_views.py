@@ -2,6 +2,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
@@ -45,12 +47,17 @@ class RegisterView(APIView):
         confirm = str(data.get("password_confirm") or "")
         errors = {}
 
-        if not email or "@" not in email:
+        try:
+            validate_email(email)
+        except ValidationError:
             errors["email"] = ["请输入有效邮箱"]
-        elif len(email) > User._meta.get_field(User.USERNAME_FIELD).max_length:
-            errors["email"] = ["邮箱过长"]
-        elif User.objects.filter(Q(username__iexact=email) | Q(email__iexact=email)).exists():
-            errors["email"] = ["该邮箱已注册"]
+        else:
+            if len(email) > User._meta.get_field(User.USERNAME_FIELD).max_length:
+                errors["email"] = ["邮箱过长"]
+            elif User.objects.filter(
+                Q(username__iexact=email) | Q(email__iexact=email)
+            ).exists():
+                errors["email"] = ["该邮箱已注册"]
 
         if password != confirm:
             errors["password"] = ["两次输入的密码不一致"]
@@ -69,7 +76,15 @@ class RegisterView(APIView):
 
         user = User(username=email, email=email)
         user.set_password(password)
-        user.save()
+        try:
+            with transaction.atomic():
+                user.save()
+        except IntegrityError:
+            errors["email"] = ["该邮箱已注册"]
+            return Response(
+                {"detail": "注册信息有误", "errors": errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         login(request, user)
         request.session.cycle_key()
         return Response(_current_user(user), status=status.HTTP_201_CREATED)
