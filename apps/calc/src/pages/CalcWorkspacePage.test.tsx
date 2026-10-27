@@ -40,6 +40,12 @@ beforeEach(() => {
           headers: { 'Content-Type': 'application/json' },
         })
       }
+      if (String(input).endsWith(`/projects/${project.project_id}/schemes`)) {
+        return new Response(JSON.stringify({ schemes: [] }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
       return baseFetch(input, init)
     }),
   )
@@ -65,25 +71,61 @@ function renderPage() {
 }
 
 describe('CalcWorkspacePage', () => {
-  it('shows project context and the return link', async () => {
+  it('shows project context in both the project bar and directory', async () => {
     renderPage()
-    expect(await screen.findByText('滨江研发楼改造')).toBeInTheDocument()
-    expect(screen.getByText('上海')).toBeInTheDocument()
+    expect((await screen.findAllByText('滨江研发楼改造')).length).toBeGreaterThanOrEqual(2)
+    expect(screen.getAllByText('上海').length).toBeGreaterThanOrEqual(2)
     expect(screen.getByText('计算中')).toBeInTheDocument()
-    expect(screen.getByText('2 个方案')).toBeInTheDocument()
+    expect(screen.getAllByText('2 个方案').length).toBeGreaterThanOrEqual(2)
     expect(screen.getByRole('link', { name: '返回项目工作台' })).toHaveAttribute(
+      'href',
+      '/workspace',
+    )
+    expect(screen.getByRole('link', { name: '返回项目工作台：滨江研发楼改造' })).toHaveAttribute(
       'href',
       '/workspace',
     )
   })
 
-  it('keeps the module tree, parameters, and results layout', async () => {
+  it('shows the workbench directory, parameters, and results layout', async () => {
     renderPage()
     expect(await screen.findByText('玄构天枢')).toBeInTheDocument()
+    expect(screen.getByRole('complementary', { name: '工作台目录' })).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: '项目目录' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /打开计算方案：未保存方案，2 个方案/ }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '收起计算模块' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    )
     expect(screen.getByText('扣件式脚手架')).toBeInTheDocument()
     expect(await screen.findByText('扣件式脚手架（品茗双立杆）')).toBeInTheDocument()
     expect(screen.getByText('立杆纵距 la')).toBeInTheDocument()
     expect(screen.getByText('连墙件强度')).toBeInTheDocument()
+  })
+
+  it('opens the existing scheme dialog from both directory scheme entry points', async () => {
+    renderPage()
+    fireEvent.click(await screen.findByRole('button', { name: /打开计算方案：未保存方案/ }))
+    expect(await screen.findByRole('dialog')).toBeInTheDocument()
+    expect(screen.getByText('当前项目方案')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }))
+
+    fireEvent.click(await screen.findByRole('button', { name: '新建方案' }))
+    expect(await screen.findByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('selects a scaffold module from the directory', async () => {
+    renderPage()
+    const moduleButton = await screen.findByRole('button', {
+      name: /扣件式脚手架（品茗双立杆）/,
+    })
+    fireEvent.click(moduleButton)
+    expect(moduleButton).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('button', { name: '扣件式脚手架，骨架版' })).not.toHaveAttribute(
+      'aria-current',
+    )
   })
 
   it('filters the result table to failed rows', async () => {

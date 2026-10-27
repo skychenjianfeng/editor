@@ -122,13 +122,29 @@ export type ModuleInfo = {
   title: string
   standard: string
   verified: boolean
+  available: boolean
+  status: 'available' | 'planned'
+  note: string
   category?: string
+}
+
+export type ModuleCategory = {
+  key: string
+  title: string
+  isNew: boolean
+  modules: ModuleInfo[]
+}
+
+export type ModuleCatalog = {
+  regions: string[]
+  categories: ModuleCategory[]
+  modules: ModuleInfo[]
 }
 
 export function useModules() {
   return useQuery({
     queryKey: ['modules'],
-    queryFn: () => getJson<{ modules: ModuleInfo[] }>(`${BASE}/catalog/modules`),
+    queryFn: () => getJson<ModuleCatalog>(`${BASE}/catalog/modules`),
     staleTime: 10 * 60 * 1000,
   })
 }

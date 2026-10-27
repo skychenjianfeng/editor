@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom/vitest'
 import { vi } from 'vitest'
 import { results } from '../mock/data'
+import { moduleCatalog } from './moduleCatalog'
 
 class ResizeObserverStub {
   observe() {}
@@ -111,23 +112,7 @@ globalThis.fetch = vi.fn(async (input: RequestInfo | URL) => {
     : url.includes('/catalog/param-spec')
       ? specPayload
       : url.includes('/catalog/modules')
-        ? {
-            modules: [
-              {
-                key: 'scaffold-fastener',
-                title: '扣件式脚手架',
-                standard: 'JGJ 130-2011',
-                verified: false,
-              },
-              {
-                key: 'scaffold-fastener-pinming',
-                title: '扣件式脚手架（品茗双立杆）',
-                standard: 'JGJ 130-2011',
-                verified: false,
-                category: '落地与满堂',
-              },
-            ],
-          }
+        ? moduleCatalog
         : url.includes('/runs?')
           ? { runs: [] }
           : runPayload

@@ -4,14 +4,14 @@ import { apiRequest, ensureCsrf } from './client'
 export const REGIONS = [
   '全国',
   '上海',
-  '江苏',
   '浙江',
-  '北京',
-  '山东',
   '广东',
+  '江苏',
+  '山东',
+  '重庆',
+  '北京',
   '湖北',
   '福建',
-  '重庆',
 ] as const
 
 export const PROJECT_STATUSES = [

@@ -180,13 +180,16 @@ function CalcWorkspace({ project }: { project: ProjectRecord }) {
       <Group orientation="vertical" className="min-h-0 flex-1">
         <Panel defaultSize="56%" minSize="34%">
           <Group orientation="horizontal">
-            <Panel defaultSize="15%" minSize="12%" maxSize="22%">
+            <Panel defaultSize="250px" minSize="220px" maxSize="360px">
               <ModuleTree
+                project={project}
                 active={module}
+                schemeName={schemeName}
                 onSelect={(key) => {
                   setModule(key)
                   setSchemeName(undefined)
                 }}
+                onSchemes={() => setSchemeOpen(true)}
               />
             </Panel>
             <Separator className={vHandle} />

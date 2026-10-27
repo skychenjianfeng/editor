@@ -16,6 +16,7 @@ from calc_runs.serializers import (
 from calc_core import scaffold_fastener
 from calc_core.batch import batch_csv, run_batch
 from calc_core.drawing import build_geometry_for_module, export_dxf, export_png
+from calc_core.module_catalog import build_catalog_payload
 from calc_core.modules import SCAFFOLD_FASTENER  # noqa: F401  (registers modules)
 from calc_core import registry
 
@@ -521,7 +522,7 @@ class BatchCsvView(APIView):
 
 class ModulesView(APIView):
     def get(self, request):
-        return Response({"modules": registry.list_modules()})
+        return Response(build_catalog_payload(registry.list_modules()))
 
 
 class ResultsCsvView(APIView):
