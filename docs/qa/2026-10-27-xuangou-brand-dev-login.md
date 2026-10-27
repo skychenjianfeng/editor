@@ -2,11 +2,11 @@
 
 日期：2026-10-27
 
-范围：Task 1–3 的品牌替换、开发环境登录预填与浏览器验收。运行时验证基于实现提交 `f12d456`；该提交之后仅补充验收测试、smoke 日志时序和本文档，不修改生产登录实现。本记录不包含账号、密码、Cookie 或 Token。
+范围：Task 1–3 的品牌替换、开发环境登录预填、浏览器验收，以及 PR 的 clean checkout 可运行性。品牌与登录运行时验证基于实现提交 `f12d456`；后续补充验收测试、smoke 日志时序、本文档，并将后端运行所需的源码、迁移、测试与测试基准纳入 PR，不修改生产登录实现。本记录不包含账号、密码、Cookie 或 Token。
 
 ## 结论
 
-全部必需检查通过。产品界面统一显示“玄构天枢”；本地开发登录页预填非空；真实系统 Chrome 中点击登录后进入 `/workspace`；项目工作台和项目计算页均显示新品牌；生产构建未包含本地演示邮箱或密码。上述登录、品牌和临时项目清理流程已固化到 `apps/calc/scripts/smoke.mjs`，可直接复跑。
+全部必需检查通过。产品界面统一显示“玄构天枢”；本地开发登录页预填非空；真实系统 Chrome 中点击登录后进入 `/workspace`；项目工作台和项目计算页均显示新品牌；生产构建未包含本地演示邮箱或密码。PR 的 clean checkout 已包含后端完整测试所需的源码、迁移、测试和测试基准，可直接运行 296 项后端测试。上述登录、品牌和临时项目清理流程已固化到 `apps/calc/scripts/smoke.mjs`，可直接复跑。
 
 ## 品牌替换
 
@@ -28,7 +28,15 @@
 
 ## 全量验证
 
+以下结果以 PR 提交在干净 worktree `.worktrees/xuangou-final-review` 的 checkout 为准。主工作树中原有的其它未提交改动未纳入本次提交。
+
 ```powershell
+cd services/calc-api
+python -m pytest -q
+python manage.py check
+python manage.py makemigrations --check
+
+cd ../..
 npm --prefix apps/calc test
 npm --prefix apps/calc run check-types
 npm --prefix apps/calc run build
@@ -36,7 +44,10 @@ npm --prefix apps/calc run build
 
 | 检查 | 结果 |
 |---|---|
-| `npm --prefix apps/calc test` | 通过；16 个测试文件、44 项测试 |
+| `python -m pytest -q` | 通过；296 项测试（7 个第三方 `ezdxf`/`pyparsing` 弃用警告） |
+| `python manage.py check` | 通过；`System check identified no issues` |
+| `python manage.py makemigrations --check` | 通过；`No changes detected` |
+| `npm --prefix apps/calc test` | 通过；15 个测试文件、38 项测试 |
 | `npm --prefix apps/calc run check-types` | 通过 |
 | `npm --prefix apps/calc run build` | 通过；2745 个模块完成转换 |
 
@@ -47,12 +58,12 @@ npm --prefix apps/calc run build
 普通无开关 CI 验收：
 
 ```powershell
-$env:CALC_URL='http://localhost:5179'
+$env:CALC_URL='http://localhost:5180'
 Remove-Item Env:CALC_EXPECT_DEV_LOGIN -ErrorAction SilentlyContinue
 npm --prefix apps/calc run test:e2e
 ```
 
-最终 head 结果：通过，保持登录页返回 200、匿名访问工作台回退到登录页，以及匿名认证接口返回 401。日志：
+clean checkout 结果：通过，保持登录页返回 200、匿名访问工作台回退到登录页，以及匿名认证接口返回 401。日志：
 
 ```text
 smoke ok: login=200 root=present workspace-fallback=200 redirect=/login?next=/workspace anonymous-me=401
@@ -61,12 +72,12 @@ smoke ok: login=200 root=present workspace-fallback=200 redirect=/login?next=/wo
 开发登录与品牌复跑：
 
 ```powershell
-$env:CALC_URL='http://localhost:5179'
+$env:CALC_URL='http://localhost:5180'
 $env:CALC_EXPECT_DEV_LOGIN='1'
 npm --prefix apps/calc run test:e2e
 ```
 
-最终 head 结果：通过。smoke 使用真实系统 Chrome（`channel: 'chrome'`, `headless: true`）完成：
+clean checkout 结果：通过。仅启动该 worktree 的 Vite（5180），后端继续使用现有 8001；Git 忽略的 `apps/calc/.env.local` 被复制到该 worktree 供开发登录 smoke 使用，未读取或记录其值。smoke 使用真实系统 Chrome（`channel: 'chrome'`, `headless: true`）完成：
 
 - 预填邮箱和密码均非空，但未读取或记录其值。
 - 点击“登录”后 URL 进入 `/workspace`。
@@ -110,4 +121,4 @@ smoke ok: dev-login=prefilled login=workspace brand=workspace+calc qa-project=cr
 
 - 仓库文档、测试日志、截图记录和报告均不包含邮箱、密码、Cookie、Token 或环境文件内容。
 - 本地演示配置继续保存在 Git 忽略的 `apps/calc/.env.local`，不随提交或生产构建分发。
-- 本轮收口提交只包含 smoke、两份回归测试和本 QA 文档，不包含生产登录实现、构建产物、本地配置或截图。
+- 本次可运行性修复只将后端运行所需的源码、迁移、测试、测试基准和本 QA 文档纳入 PR；不包含主工作树中的其它并行前端改动、SQLite、日志、缓存、构建产物、本地配置或截图。
