@@ -220,6 +220,11 @@ GREATER_OR_EQUAL_RESULT_KEYS = {
     "wire_rope_safety",
 }
 
+BOOLEAN_RESULT_KEYS = {
+    "tie_first_step",
+    "rigid_tie_construction",
+}
+
 
 def _failed_results(payload: dict[str, Any]) -> list[dict[str, Any]]:
     """Use the result rows as the source of truth; summaries can be stale."""
@@ -247,6 +252,8 @@ def _format_number(value: Any) -> str:
 
 def _result_outcome_text(result: dict[str, Any]) -> str:
     verdict = "满足要求" if result["ok"] else "不满足要求"
+    if result.get("key") in BOOLEAN_RESULT_KEYS:
+        return f"结果：{verdict}"
     if result.get("unit") == "通过项/检查项":
         return (
             f"结果：通过 {_format_number(result['value'])}/"
@@ -597,7 +604,12 @@ def build_generic_docx(
 
     figures = build_scaffold_figures(meta.get("moduleKey", ""), payload)
     if figures:
-        _heading(doc, "三、内力与变形图")
+        figure_heading = (
+            "三、计算图"
+            if meta.get("moduleKey") == "scaffold-tie-member"
+            else "三、内力与变形图"
+        )
+        _heading(doc, figure_heading)
         for index, (png, caption) in enumerate(figures, start=1):
             doc.add_picture(io.BytesIO(png), width=Cm(15.2))
             cap = doc.add_paragraph()

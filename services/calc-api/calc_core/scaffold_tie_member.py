@@ -382,6 +382,15 @@ def _merged(params: dict[str, Any]) -> dict[str, Any]:
     for key, options in enums.items():
         if merged[key] not in options:
             raise ValueError(f"unknown {key}: {merged[key]}")
+    if merged["layout"] == "单排" and merged["scaffoldType"] != "单排":
+        raise ValueError("layout=单排 只能配 scaffoldType=单排")
+    if merged["layout"] == "双排" and merged["scaffoldType"] not in (
+        "双排落地",
+        "双排悬挑",
+    ):
+        raise ValueError(
+            "layout=双排 只能配 scaffoldType=双排落地/双排悬挑"
+        )
     return merged
 
 
@@ -440,10 +449,9 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
         else 40.0
     )
     first_step_ok = p["tieFromFirstStep"] == "是"
-    single_row = p["layout"] == "单排" or p["scaffoldType"] == "单排"
+    single_row = p["layout"] == "单排"
     single_row_ok = not single_row or p["H"] <= 24.0
     soft_tie = p["connectionType"] == "软拉硬撑"
-    soft_tie_ok = not soft_tie or p["H"] <= 24.0
 
     results = [
         _item(
@@ -571,8 +579,12 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
                 "应从底层第一步纵向水平杆处设置",
                 ok=first_step_ok,
             ),
+        ]
+    )
+    if single_row:
+        results.append(
             _item(
-                offset_number + 5,
+                len(results) + 1,
                 "single_row_height",
                 "单排架体高度",
                 p["H"],
@@ -580,26 +592,34 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
                 "m",
                 "JGJ 130-2011 6.1.2",
                 True,
-                f"单排≤24m（当前{'单排' if single_row else '非单排'}）",
+                "单排架体高度不得超过 24m",
                 ok=single_row_ok,
+            )
+        )
+    rigid_tie_ok = not soft_tie
+    results.append(
+        _item(
+            len(results) + 1,
+            "rigid_tie_construction",
+            "连墙件刚性构造",
+            1.0 if rigid_tie_ok else 0.0,
+            1.0,
+            "—",
+            "GB 55023-2022 4.4.6",
+            True,
+            (
+                "GB 55023-2022 第4.4.6条强制要求连墙件为可拉压的刚性构件；"
+                "当前采用软拉硬撑，任何高度均不满足要求。"
+                "JGJ 130-2011 仅限制 H>24m 时不得采用软拉硬撑，"
+                "GB 55023-2022 的要求更严。"
+                if soft_tie
+                else "GB 55023-2022 第4.4.6条强制要求连墙件为可拉压的刚性构件；"
+                "当前连接方式不是软拉硬撑，满足刚性构造要求。"
+                "JGJ 130-2011 仅限制 H>24m 时不得采用软拉硬撑，"
+                "GB 55023-2022 的要求更严。"
             ),
-            _item(
-                offset_number + 6,
-                "soft_tie_height",
-                "软拉硬撑适用高度",
-                p["H"] if soft_tie else 0.0,
-                24.0 if soft_tie else 1.0,
-                "m" if soft_tie else "—",
-                "GB 55023-2022 4.4.6",
-                True,
-                (
-                    "H>24m 禁止软拉硬撑，连墙件应为刚性构造"
-                    if soft_tie
-                    else "连墙件应为刚性构造，软拉硬撑仅在≤24m时允许且刚性构造优先"
-                ),
-                ok=soft_tie_ok,
-            ),
-        ]
+            ok=rigid_tie_ok,
+        )
     )
 
     assumptions = [
@@ -607,7 +627,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
         "f=205N/mm²、Rc=8.0kN 取自 JGJ 130-2011；φ 按附录 A 表 A.0.6 查取",
         "μz 按 GB 50009-2012 表 8.2.1 取架体高度 H；μs 按 JGJ 130-2011 封闭状况和背靠建筑规则计算",
         "连墙点覆盖面积仅作布置覆盖范围校核，不替代建筑结构本体、预埋件或连接节点设计",
-        "H>24m 的软拉硬撑判定不满足；H≤24m 仍优先采用刚性连墙构造",
+        "GB 55023-2022 第4.4.6条为强制性条文，连墙件必须是可拉压的刚性构件；软拉硬撑在任何高度均判定不满足，较 JGJ 130-2011 仅限制 H>24m 更严",
         "本模块为 PmStudio 自算结果，verified=false，尚未取得同参数品茗 RTF oracle",
     ]
     if p["tieNetArea"] == 0:

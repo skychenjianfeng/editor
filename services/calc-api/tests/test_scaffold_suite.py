@@ -39,6 +39,7 @@ def test_suite_generates_ten_utf8_named_reports_manifest_and_qa(tmp_path):
     )
 
     assert manifest["module_count"] == 10
+    assert manifest["result_count"] == 113
     assert manifest["artifact_kind"] == "pmsstudio-self-calculation-regression"
     assert "不是品茗 oracle" in manifest["scope"]
     assert [entry["key"] for entry in manifest["modules"]] == list(SCAFFOLD_MODULE_KEYS)
@@ -71,6 +72,14 @@ def test_suite_generates_ten_utf8_named_reports_manifest_and_qa(tmp_path):
         assert entry["结果表行数"] == entry["结果数"] + 1
         assert entry["summary"]["total"] == entry["结果数"]
         assert entry["summary"]["failed"] == len(entry["失败项"])
+
+    tie_entry = next(
+        entry for entry in manifest["modules"] if entry["key"] == "scaffold-tie-member"
+    )
+    assert tie_entry["结果数"] == 10
+    assert tie_entry["结果表行数"] == 11
+    assert tie_entry["内嵌图片数"] == 2
+    assert {item["key"] for item in tie_entry["失败项"]} == {"tie_coupler_slip"}
 
     manifest_path = output_dir / "manifest.json"
     parsed_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))

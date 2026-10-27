@@ -79,6 +79,52 @@ def test_tie_member_generic_report_uses_chinese_parameter_labels():
     assert len(doc.inline_shapes) == 2
 
 
+def test_tie_member_generic_report_uses_calculation_figure_heading():
+    defn = registry.require("scaffold-tie-member")
+    payload = defn.run({})
+    content = report.build_generic_docx(
+        payload["params"],
+        payload,
+        {"moduleKey": defn.key, "moduleTitle": defn.title},
+    )
+    doc = Document(io.BytesIO(content))
+    paragraphs = [paragraph.text for paragraph in doc.paragraphs]
+
+    assert "三、计算图" in paragraphs
+    assert "三、内力与变形图" not in paragraphs
+
+
+def test_tie_member_generic_report_renders_construction_booleans_in_paragraphs():
+    defn = registry.require("scaffold-tie-member")
+    payload = defn.run(
+        {
+            "connectionType": "螺栓连接",
+            "tieFromFirstStep": "否",
+        }
+    )
+    content = report.build_generic_docx(
+        payload["params"],
+        payload,
+        {"moduleKey": defn.key, "moduleTitle": defn.title},
+    )
+    doc = Document(io.BytesIO(content))
+    paragraphs = [paragraph.text for paragraph in doc.paragraphs]
+
+    first_step_index = next(
+        index
+        for index, text in enumerate(paragraphs)
+        if "连墙件首步设置" in text and text.startswith("8. ")
+    )
+    rigid_tie_index = next(
+        index
+        for index, text in enumerate(paragraphs)
+        if "连墙件刚性构造" in text and text.startswith("9. ")
+    )
+    assert paragraphs[first_step_index + 2] == "结果：不满足要求"
+    assert paragraphs[rigid_tie_index + 2] == "结果：满足要求"
+    assert not any("1 — = 1" in text or "1 ≤ 1" in text for text in paragraphs)
+
+
 @pytest.mark.parametrize(
     "module_key",
     [

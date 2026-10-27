@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-27T19:42:16+08:00",
+  "generated_at": "2026-10-27T19:50:43+08:00",
   "scope": "PmStudio 自算回归，不是品茗 oracle；本套件未启动、未操控品茗软件，不得据此声称完成品茗对照或授权操作。",
   "artifact_kind": "pmsstudio-self-calculation-regression",
   "module_count": 10,
-  "result_count": 114,
+  "result_count": 113,
   "failed_count": 4,
   "control_failed_count": 4,
   "modules": [
@@ -74,7 +74,7 @@
       "结果数": 29,
       "报告文件": "01_scaffold-fastener_扣件式脚手架.docx",
       "DOCX大小": 344864,
-      "SHA256": "6f924a210556d22aa3c4fc33d40bf0bd34e33f05c469dfef5b07c54061b8d11e",
+      "SHA256": "8e7dcbc13584f73d8370e414ad8036d0807e237c10b33d05cffeb935e0726ff9",
       "内嵌图片数": 5,
       "结果表行数": 30
     },
@@ -112,7 +112,7 @@
       "结果数": 16,
       "报告文件": "02_scaffold-fastener-pinming_扣件式脚手架（品茗双立杆）.docx",
       "DOCX大小": 296997,
-      "SHA256": "92d0375955b0eccdd3af18b63245a19c95dbb12f85a92800d31692466687665f",
+      "SHA256": "046d303e7922ba878920ea9b8e35fc6b117ee72901368526ca0c3ee480e31354",
       "内嵌图片数": 4,
       "结果表行数": 17
     },
@@ -124,7 +124,7 @@
       "verified": false,
       "category": "落地与满堂",
       "summary": {
-        "total": 11,
+        "total": 10,
         "failed": 1,
         "control_failed": 1
       },
@@ -137,8 +137,7 @@
         "连墙件覆盖面积",
         "连墙件偏离主节点",
         "连墙件首步设置",
-        "单排架体高度",
-        "软拉硬撑适用高度"
+        "连墙件刚性构造"
       ],
       "失败项": [
         {
@@ -152,12 +151,12 @@
           "clause": "JGJ 130-2011 5.2.15"
         }
       ],
-      "结果数": 11,
+      "结果数": 10,
       "报告文件": "03_scaffold-tie-member_连墙件计算.docx",
-      "DOCX大小": 84905,
-      "SHA256": "9de8465390338e36b09d8cfafa9bf1929fd1a06bf7d246a4063f059170caa7ba",
+      "DOCX大小": 84849,
+      "SHA256": "df3bbb11280e510892dc45407bc31b9f3c41b613af567e282f2adf61e1ee5db8",
       "内嵌图片数": 2,
-      "结果表行数": 12
+      "结果表行数": 11
     },
     {
       "sequence": 4,
@@ -183,7 +182,7 @@
       "结果数": 6,
       "报告文件": "04_cantilever-scaffold_型钢悬挑脚手架.docx",
       "DOCX大小": 99077,
-      "SHA256": "3eb904f3da8270f3a90b85d4ba3ab9dcdc56d2c78fa7a3167865285782b3c035",
+      "SHA256": "e3d5dcd8d204d94a1d02853b8c514fe5c66173d8ca20a611c8456145a8e16290",
       "内嵌图片数": 1,
       "结果表行数": 7
     },
@@ -214,7 +213,7 @@
       "结果数": 9,
       "报告文件": "05_full-hall-scaffold_满堂脚手架.docx",
       "DOCX大小": 171377,
-      "SHA256": "0e18f9577d65b16b8f4a2e0a245bc35a40fb7c7b556272759de09a075c5205ab",
+      "SHA256": "10632bff0d64cbe1a699eb9606a2edb03766561e266164f2605515bb8f46508b",
       "内嵌图片数": 2,
       "结果表行数": 10
     },
@@ -244,7 +243,7 @@
       "结果数": 8,
       "报告文件": "06_suspended-basket_高处作业吊篮.docx",
       "DOCX大小": 107015,
-      "SHA256": "d29fe9987e75b4cfb6051191e412843217adf74ac37ce9f71866a9216a2ec101",
+      "SHA256": "a18936dacada0375ad9179865b1ab4713c0e5349e79bb9dc3eb5d081cac06063",
       "内嵌图片数": 1,
       "结果表行数": 9
     },
@@ -275,7 +274,7 @@
       "结果数": 9,
       "报告文件": "07_door-scaffold_门式钢管脚手架.docx",
       "DOCX大小": 156718,
-      "SHA256": "3f2b01cb101c14ad7f4d6d9485cdf7bbe0819612128af34848de3c86166df942",
+      "SHA256": "8518ed3f34f7b05e0a6778f27a58b87ae77a83443a0a82325eefa11f8385f6ad",
       "内嵌图片数": 2,
       "结果表行数": 10
     },
@@ -306,7 +305,7 @@
       "结果数": 9,
       "报告文件": "08_attached-lifting-scaffold_附着式升降脚手架.docx",
       "DOCX大小": 89683,
-      "SHA256": "03421d1c71084eb3d325581a71a0c015af4addeaecf5ef05875ce060bbf1ce39",
+      "SHA256": "858b195f8c58107b0615faa0386d98c17305d83db7a3fe1580ebdc811f8e47c7",
       "内嵌图片数": 1,
       "结果表行数": 10
     },
@@ -345,8 +344,8 @@
       ],
       "结果数": 8,
       "报告文件": "09_ground-operation-platform_落地式操作平台.docx",
-      "DOCX大小": 112777,
-      "SHA256": "8cedd546e7dcd921114e8db916f66b192d02819dca7cf6609ebeb7c2aa68fcf8",
+      "DOCX大小": 112778,
+      "SHA256": "835556763e31485b7f446ea79cdf84af17b4eac10563120c4b0cb1fba1c6add4",
       "内嵌图片数": 1,
       "结果表行数": 9
     },
@@ -376,8 +375,8 @@
       "失败项": [],
       "结果数": 9,
       "报告文件": "10_cantilever-operation-platform_悬挑式操作平台.docx",
-      "DOCX大小": 112753,
-      "SHA256": "122de7d176eedd06e47e71dbefea601cb0dc448abec045c2e52dc02c1ee2836e",
+      "DOCX大小": 112746,
+      "SHA256": "f784ab526e3a7f3f91deb8f87634c8c1e93e312482493e502fa7141c36d7ff46",
       "内嵌图片数": 1,
       "结果表行数": 10
     }

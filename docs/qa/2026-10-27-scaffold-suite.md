@@ -6,7 +6,7 @@
 
 | 模块数 | 结果总数 | 失败总数 | 控制项失败总数 |
 | ---: | ---: | ---: | ---: |
-| 10 | 114 | 4 | 4 |
+| 10 | 113 | 4 | 4 |
 
 ## 01. 扣件式脚手架
 
@@ -15,7 +15,7 @@
 - verified：`false`
 - 分类：落地与满堂
 - 汇总：结果 29 项，失败 2 项，控制项失败 2 项
-- 报告文件：[01_scaffold-fastener_扣件式脚手架.docx](../../oracle/platform-suite-20261027/01_scaffold-fastener_扣件式脚手架.docx)，344864 bytes，SHA256 `6f924a210556d22aa3c4fc33d40bf0bd34e33f05c469dfef5b07c54061b8d11e`，内嵌图片 5 张，结果表 30 行（含表头）
+- 报告文件：[01_scaffold-fastener_扣件式脚手架.docx](../../oracle/platform-suite-20261027/01_scaffold-fastener_扣件式脚手架.docx)，344864 bytes，SHA256 `8e7dcbc13584f73d8370e414ad8036d0807e237c10b33d05cffeb935e0726ff9`，内嵌图片 5 张，结果表 30 行（含表头）
 
 **通过项（27）**：立杆长细比 λ；连墙件强度；连墙件稳定承载力；纵向水平杆抗弯；横向水平杆抗弯；扣件抗滑承载力；立杆地基承载力；脚手架搭设高度；步距/纵距构造限值；纵向水平杆挠度；横向水平杆挠度；剪刀撑宽度构造；连墙件覆盖面积；连墙件连接强度；连墙件偏离主节点；连墙件首步设置；纵横向扫地杆；剪刀撑与地面倾角；防护栏杆上杆高度；挡脚板高度；密目式安全立网；剪刀撑宽度上限；剪刀撑布置间距/连续性；连墙点以上悬臂高度；连墙件间距（步/跨）；脚手板抗弯；脚手板挠度
 
@@ -31,7 +31,7 @@
 - verified：`false`
 - 分类：落地与满堂
 - 汇总：结果 16 项，失败 0 项，控制项失败 0 项
-- 报告文件：[02_scaffold-fastener-pinming_扣件式脚手架（品茗双立杆）.docx](../../oracle/platform-suite-20261027/02_scaffold-fastener-pinming_扣件式脚手架（品茗双立杆）.docx)，296997 bytes，SHA256 `92d0375955b0eccdd3af18b63245a19c95dbb12f85a92800d31692466687665f`，内嵌图片 4 张，结果表 17 行（含表头）
+- 报告文件：[02_scaffold-fastener-pinming_扣件式脚手架（品茗双立杆）.docx](../../oracle/platform-suite-20261027/02_scaffold-fastener-pinming_扣件式脚手架（品茗双立杆）.docx)，296997 bytes，SHA256 `046d303e7922ba878920ea9b8e35fc6b117ee72901368526ca0c3ee480e31354`，内嵌图片 4 张，结果表 17 行（含表头）
 
 **通过项（16）**：纵向水平杆抗弯；纵向水平杆挠度；横向水平杆抗弯；横向水平杆挠度；纵向水平杆与立杆扣件抗滑；横向水平杆与立杆扣件抗滑；立杆长细比；单立杆稳定（不组合风）；双立杆稳定（不组合风）；单立杆稳定（组合风）；双立杆稳定（组合风）；连墙件强度与稳定；连墙件对接焊缝；连墙件预埋件锚筋；连墙件与脚手架连接抗滑；立杆地基承载力
 
@@ -43,10 +43,10 @@
 - 标准：`JGJ 130-2011`
 - verified：`false`
 - 分类：落地与满堂
-- 汇总：结果 11 项，失败 1 项，控制项失败 1 项
-- 报告文件：[03_scaffold-tie-member_连墙件计算.docx](../../oracle/platform-suite-20261027/03_scaffold-tie-member_连墙件计算.docx)，84905 bytes，SHA256 `9de8465390338e36b09d8cfafa9bf1929fd1a06bf7d246a4063f059170caa7ba`，内嵌图片 2 张，结果表 12 行（含表头）
+- 汇总：结果 10 项，失败 1 项，控制项失败 1 项
+- 报告文件：[03_scaffold-tie-member_连墙件计算.docx](../../oracle/platform-suite-20261027/03_scaffold-tie-member_连墙件计算.docx)，84849 bytes，SHA256 `df3bbb11280e510892dc45407bc31b9f3c41b613af567e282f2adf61e1ee5db8`，内嵌图片 2 张，结果表 11 行（含表头）
 
-**通过项（10）**：连墙件强度；连墙件稳定性；连墙件连接承载力；连墙件竖向间距；连墙件水平间距；连墙件覆盖面积；连墙件偏离主节点；连墙件首步设置；单排架体高度；软拉硬撑适用高度
+**通过项（9）**：连墙件强度；连墙件稳定性；连墙件连接承载力；连墙件竖向间距；连墙件水平间距；连墙件覆盖面积；连墙件偏离主节点；连墙件首步设置；连墙件刚性构造
 
 **失败项（1）**：
 
@@ -59,7 +59,7 @@
 - verified：`false`
 - 分类：悬挑与升降
 - 汇总：结果 6 项，失败 0 项，控制项失败 0 项
-- 报告文件：[04_cantilever-scaffold_型钢悬挑脚手架.docx](../../oracle/platform-suite-20261027/04_cantilever-scaffold_型钢悬挑脚手架.docx)，99077 bytes，SHA256 `3eb904f3da8270f3a90b85d4ba3ab9dcdc56d2c78fa7a3167865285782b3c035`，内嵌图片 1 张，结果表 7 行（含表头）
+- 报告文件：[04_cantilever-scaffold_型钢悬挑脚手架.docx](../../oracle/platform-suite-20261027/04_cantilever-scaffold_型钢悬挑脚手架.docx)，99077 bytes，SHA256 `e3d5dcd8d204d94a1d02853b8c514fe5c66173d8ca20a611c8456145a8e16290`，内嵌图片 1 张，结果表 7 行（含表头）
 
 **通过项（6）**：悬挑梁抗弯；悬挑梁整体稳定；悬挑梁挠度；锚固钢筋（U形环）抗拉；悬挑梁抗剪；锚固抗倾覆
 
@@ -72,7 +72,7 @@
 - verified：`false`
 - 分类：落地与满堂
 - 汇总：结果 9 项，失败 0 项，控制项失败 0 项
-- 报告文件：[05_full-hall-scaffold_满堂脚手架.docx](../../oracle/platform-suite-20261027/05_full-hall-scaffold_满堂脚手架.docx)，171377 bytes，SHA256 `0e18f9577d65b16b8f4a2e0a245bc35a40fb7c7b556272759de09a075c5205ab`，内嵌图片 2 张，结果表 10 行（含表头）
+- 报告文件：[05_full-hall-scaffold_满堂脚手架.docx](../../oracle/platform-suite-20261027/05_full-hall-scaffold_满堂脚手架.docx)，171377 bytes，SHA256 `10632bff0d64cbe1a699eb9606a2edb03766561e266164f2605515bb8f46508b`，内嵌图片 2 张，结果表 10 行（含表头）
 
 **通过项（9）**：水平杆抗弯；水平杆挠度；立杆稳定；立杆长细比与步距构造；立杆地基承载力；水平杆连接扣件抗滑；剪刀撑布置与几何构造；高宽比连墙或等效张拉要求；爬梯与操作层脚手板构造
 
@@ -85,7 +85,7 @@
 - verified：`false`
 - 分类：工具式与平台
 - 汇总：结果 8 项，失败 0 项，控制项失败 0 项
-- 报告文件：[06_suspended-basket_高处作业吊篮.docx](../../oracle/platform-suite-20261027/06_suspended-basket_高处作业吊篮.docx)，107015 bytes，SHA256 `d29fe9987e75b4cfb6051191e412843217adf74ac37ce9f71866a9216a2ec101`，内嵌图片 1 张，结果表 9 行（含表头）
+- 报告文件：[06_suspended-basket_高处作业吊篮.docx](../../oracle/platform-suite-20261027/06_suspended-basket_高处作业吊篮.docx)，107015 bytes，SHA256 `a18936dacada0375ad9179865b1ab4713c0e5349e79bb9dc3eb5d081cac06063`，内嵌图片 1 张，结果表 9 行（含表头）
 
 **通过项（8）**：吊篮平台主梁抗弯；吊篮平台主梁挠度；悬挂机构抗倾覆稳定系数；配重质量需求；工作钢丝绳安全系数；JGJ动力钢丝绳风载组合；建筑结构支承点承载力；防坠安全装置配置
 
@@ -98,7 +98,7 @@
 - verified：`false`
 - 分类：落地与满堂
 - 汇总：结果 9 项，失败 0 项，控制项失败 0 项
-- 报告文件：[07_door-scaffold_门式钢管脚手架.docx](../../oracle/platform-suite-20261027/07_door-scaffold_门式钢管脚手架.docx)，156718 bytes，SHA256 `3f2b01cb101c14ad7f4d6d9485cdf7bbe0819612128af34848de3c86166df942`，内嵌图片 2 张，结果表 10 行（含表头）
+- 报告文件：[07_door-scaffold_门式钢管脚手架.docx](../../oracle/platform-suite-20261027/07_door-scaffold_门式钢管脚手架.docx)，156718 bytes，SHA256 `8518ed3f34f7b05e0a6778f27a58b87ae77a83443a0a82325eefa11f8385f6ad`，内嵌图片 2 张，结果表 10 行（含表头）
 
 **通过项（9）**：门架立杆稳定；门架横梁抗弯；门架横梁挠度；连墙件承载力及构造；地基承载力；门架与配件装配构造；剪刀撑布置与搭接构造；水平加固杆构造；连墙件细部构造
 
@@ -111,7 +111,7 @@
 - verified：`false`
 - 分类：悬挑与升降
 - 汇总：结果 9 项，失败 0 项，控制项失败 0 项
-- 报告文件：[08_attached-lifting-scaffold_附着式升降脚手架.docx](../../oracle/platform-suite-20261027/08_attached-lifting-scaffold_附着式升降脚手架.docx)，89683 bytes，SHA256 `03421d1c71084eb3d325581a71a0c015af4addeaecf5ef05875ce060bbf1ce39`，内嵌图片 1 张，结果表 10 行（含表头）
+- 报告文件：[08_attached-lifting-scaffold_附着式升降脚手架.docx](../../oracle/platform-suite-20261027/08_attached-lifting-scaffold_附着式升降脚手架.docx)，89683 bytes，SHA256 `858b195f8c58107b0615faa0386d98c17305d83db7a3fe1580ebdc811f8e47c7`，内嵌图片 1 张，结果表 10 行（含表头）
 
 **通过项（9）**：架体风荷载/水平斜杆；竖向主框架受压承载力；附墙支座/穿墙螺栓承载力；防坠装置；升降同步与架体构造；升降动力设备额定承载力；升降/防坠悬臂梁抗弯；导轨专项验算利用率；外立面全高剪刀撑构造
 
@@ -124,7 +124,7 @@
 - verified：`false`
 - 分类：工具式与平台
 - 汇总：结果 8 项，失败 1 项，控制项失败 1 项
-- 报告文件：[09_ground-operation-platform_落地式操作平台.docx](../../oracle/platform-suite-20261027/09_ground-operation-platform_落地式操作平台.docx)，112777 bytes，SHA256 `8cedd546e7dcd921114e8db916f66b192d02819dca7cf6609ebeb7c2aa68fcf8`，内嵌图片 1 张，结果表 9 行（含表头）
+- 报告文件：[09_ground-operation-platform_落地式操作平台.docx](../../oracle/platform-suite-20261027/09_ground-operation-platform_落地式操作平台.docx)，112778 bytes，SHA256 `835556763e31485b7f446ea79cdf84af17b4eac10563120c4b0cb1fba1c6add4`，内嵌图片 1 张，结果表 9 行（含表头）
 
 **通过项（7）**：平台板抗弯；平台板挠度；水平杆或搁栅抗弯；立杆稳定；立杆基础地基承载力；水平杆连接扣件抗滑；防护栏杆、连墙件及稳定构造
 
@@ -139,7 +139,7 @@
 - verified：`false`
 - 分类：工具式与平台
 - 汇总：结果 9 项，失败 0 项，控制项失败 0 项
-- 报告文件：[10_cantilever-operation-platform_悬挑式操作平台.docx](../../oracle/platform-suite-20261027/10_cantilever-operation-platform_悬挑式操作平台.docx)，112753 bytes，SHA256 `122de7d176eedd06e47e71dbefea601cb0dc448abec045c2e52dc02c1ee2836e`，内嵌图片 1 张，结果表 10 行（含表头）
+- 报告文件：[10_cantilever-operation-platform_悬挑式操作平台.docx](../../oracle/platform-suite-20261027/10_cantilever-operation-platform_悬挑式操作平台.docx)，112746 bytes，SHA256 `f784ab526e3a7f3f91deb8f87634c8c1e93e312482493e502fa7141c36d7ff46`，内嵌图片 1 张，结果表 10 行（含表头）
 
 **通过项（9）**：主梁抗弯及悬挑长度构造；主梁挠度；钢丝绳/斜拉承载力；锚固或连接承载力；抗倾覆与支承构造；次梁抗弯；铺板抗弯；焊缝抗剪连接；防护栏杆及吊环构造
 

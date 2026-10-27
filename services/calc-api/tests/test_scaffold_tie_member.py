@@ -62,9 +62,9 @@ def test_spacing_and_height_drive_result_keys():
         "tie_area",
         "tie_offset",
         "tie_first_step",
-        "single_row_height",
-        "soft_tie_height",
+        "rigid_tie_construction",
     } == keys
+    assert payload["summary"]["total"] == 10
 
 
 def test_wind_pressure_increases_axial_force():
@@ -90,6 +90,7 @@ def test_non_coupler_connection_omits_coupler_slip():
     payload = tie.run({"connectionType": "螺栓连接"})
     keys = {row["key"] for row in payload["results"]}
     assert "tie_coupler_slip" not in keys
+    assert payload["summary"]["total"] == 9
 
 
 @pytest.mark.parametrize(
@@ -105,12 +106,67 @@ def test_non_coupler_connection_omits_coupler_slip():
         ),
         (
             {"H": 30.0, "connectionType": "软拉硬撑"},
-            "soft_tie_height",
+            "rigid_tie_construction",
+        ),
+        (
+            {"H": 20.0, "connectionType": "软拉硬撑"},
+            "rigid_tie_construction",
         ),
     ],
 )
 def test_construction_rules_fail(overrides, key):
     assert _result(tie.run(overrides), key)["ok"] is False
+
+
+def test_non_soft_tie_is_rigid_construction():
+    result = _result(tie.run({}), "rigid_tie_construction")
+    assert result["item"] == "连墙件刚性构造"
+    assert result["ok"] is True
+    assert "GB 55023-2022" in result["detail"]
+    assert "JGJ 130-2011" in result["detail"]
+    assert "24m" in result["detail"]
+    assert "更严" in result["detail"]
+
+
+@pytest.mark.parametrize("height", [20.0, 30.0])
+def test_soft_tie_is_rejected_at_any_height(height):
+    result = _result(
+        tie.run({"H": height, "connectionType": "软拉硬撑"}),
+        "rigid_tie_construction",
+    )
+    assert result["item"] == "连墙件刚性构造"
+    assert result["ok"] is False
+    assert "任何高度" in result["detail"]
+    assert "GB 55023-2022" in result["detail"]
+    assert "更严" in result["detail"]
+
+
+def test_single_row_height_is_only_output_for_single_row_layout():
+    default_keys = {row["key"] for row in tie.run({})["results"]}
+    assert "single_row_height" not in default_keys
+
+    low = _result(
+        tie.run({"H": 20.0, "layout": "单排", "scaffoldType": "单排"}),
+        "single_row_height",
+    )
+    high = _result(
+        tie.run({"H": 30.0, "layout": "单排", "scaffoldType": "单排"}),
+        "single_row_height",
+    )
+    assert low["ok"] is True
+    assert high["ok"] is False
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"layout": "单排", "scaffoldType": "双排落地"},
+        {"layout": "双排", "scaffoldType": "单排"},
+    ],
+)
+def test_layout_and_scaffold_type_must_agree(overrides):
+    with pytest.raises(ValueError, match="layout.*scaffoldType"):
+        tie.run(overrides)
 
 
 def test_cantilever_high_area_limit_is_27_square_metres():

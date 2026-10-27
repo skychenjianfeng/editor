@@ -14,11 +14,20 @@
 - `Nlw=1.4*wk*Aw`；`N0=2kN`（单排）或 `3kN`（双排）。
 - `Nl<=Nv`；扣件连接另校核 `Nl<=8.0kN`。
 - 双排悬挑且高度大于 50m 时覆盖面积限值为 27m²，其余为 40m²。
-- 高度大于 24m 时禁止软拉硬撑。
+- `layout=单排` 只能配 `scaffoldType=单排`；`layout=双排` 只能配双排落地或双排悬挑。
+- GB 55023-2022 第 4.4.6 条为强制性条文，连墙件必须为可拉压的刚性构件；`软拉硬撑` 在任何高度均不允许。
 - 新模块 `verified=false`，不得声称已通过品茗 oracle。
 - 不修改现有扣件式模块的默认结果数量和数值。
 - 所有新增生产代码必须先有失败测试。
 - 不提交工作区中与本功能无关的现有改动。
+
+### 2026-10-27 主管复核修订
+
+- [x] 保留首版已完成内核、注册、四视图、计算书、覆盖记录和端到端验收的历史事实。
+- [x] 修正双排默认结果中与工况无关的单排高度行；非单排不再输出 `single_row_height`。
+- [x] 将高度阈值型 `soft_tie_height` 改为强制构造项 `rigid_tie_construction`，软拉硬撑在任何高度均失败。
+- [x] 增加 `layout` 与 `scaffoldType` 双向一致性校验。
+- [x] 通用计算书将首步设置与刚性构造输出为“满足要求/不满足要求”，连墙件图题使用“计算图”。
 
 ---
 
@@ -91,6 +100,7 @@ def test_default_payload_uses_jgj_wind_factor_and_axial_force_sum():
         d["Nlw_kN"] + d["N0_kN"], abs=0.05
     )
     assert payload["summary"]["total"] == len(payload["results"])
+    assert payload["summary"]["total"] == 10
 
 
 def test_spacing_and_height_drive_result_keys():
@@ -106,8 +116,7 @@ def test_spacing_and_height_drive_result_keys():
         "tie_area",
         "tie_offset",
         "tie_first_step",
-        "single_row_height",
-        "soft_tie_height",
+        "rigid_tie_construction",
     } == keys
 
 
@@ -149,7 +158,11 @@ def test_non_coupler_connection_omits_coupler_slip():
         ),
         (
             {"H": 30.0, "connectionType": "软拉硬撑"},
-            "soft_tie_height",
+            "rigid_tie_construction",
+        ),
+        (
+            {"H": 20.0, "connectionType": "软拉硬撑"},
+            "rigid_tie_construction",
         ),
     ],
 )
@@ -267,7 +280,7 @@ tie_bays = p["tieHorizontalSpacing"] / p["la"]
 area_limit = 27.0 if p["scaffoldType"] == "双排悬挑" and p["H"] > 50 else 40.0
 ```
 
-结果必须包含测试列出的全部条目；非扣件连接时不追加 `tie_coupler_slip`。所有构造判定显式传入 `ok=`，不要依赖默认比较方向。
+默认双排扣件连接输出 10 条结果；非扣件连接不追加 `tie_coupler_slip`，共 9 条。`single_row_height` 仅在 `layout=单排` 时追加。`rigid_tie_construction` 始终输出，非软拉硬撑通过，软拉硬撑无论高度均失败，detail 明确 GB 55023-2022 第 4.4.6 条比 JGJ 130-2011 仅限制 H>24m 更严。所有构造判定显式传入 `ok=`，不要依赖默认比较方向。
 
 - [x] **Step 5: 运行目标测试确认 GREEN**
 
@@ -558,6 +571,8 @@ for key, value in params.items():
 header = ["参数", "取值", "单位"] if include_unit else ["参数", "取值"]
 ```
 
+`tie_first_step`、`rigid_tie_construction` 的计算过程段落必须输出“结果：满足要求”或“结果：不满足要求”，不得显示 `1 ≤ 1`；当 `moduleKey=scaffold-tie-member` 时，图片章节标题使用“三、计算图”。
+
 - [x] **Step 4: 确认 GREEN**
 
 ```powershell
@@ -660,7 +675,7 @@ Expected: no pending migrations; `check` reports no issues.
 python -m calc_core.scaffold_suite --output-dir ..\..\oracle\platform-suite-20261027 --qa-path ..\..\docs\qa\2026-10-27-scaffold-suite.md
 ```
 
-Expected: `generated=10`; manifest 模块数 10；连墙件报告包含 2 张图，结果表行数等于结果数加 1。
+Expected: `generated=10`; manifest 模块数 10、结果总数 113；连墙件报告为 10 条结果、结果表 11 行（含表头）、2 张图。
 
 - [x] **Step 4: 运行前端测试与构建**
 
