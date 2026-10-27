@@ -601,7 +601,7 @@ git commit -m "feat(calc): isolate projects and runs by owner"
   - `useLogin()`, `useRegister()`, `useLogout()`
   - `AuthGate` 和前端认证状态恢复能力
 
-- [ ] **Step 1: 安装路由、表单与 shadcn 依赖**
+- [x] **Step 1: 安装路由、表单与 shadcn 依赖**
 
 ```powershell
 cd apps/calc
@@ -612,7 +612,7 @@ bunx shadcn@latest add button input label card alert skeleton table dialog badge
 
 如果 shadcn 初始化询问 base color，选择 `neutral`。当前 `mcp__shadcn_ui` 返回的是 shadcn-vue 目录，不能直接复制到 React；使用 CLI 安装 React registry 源码，生成后再核对 import 和依赖。
 
-- [ ] **Step 2: 写登录和注册 RED 测试**
+- [x] **Step 2: 写登录和注册 RED 测试**
 
 ```tsx
 // apps/calc/src/pages/LoginPage.test.tsx
@@ -676,7 +676,7 @@ describe('LoginPage', () => {
 
 Register 测试覆盖确认密码不一致、邮箱已存在和成功注册跳转 `/workspace`。
 
-- [ ] **Step 3: 确认前端 RED**
+- [x] **Step 3: 确认前端 RED**
 
 ```powershell
 bun run test -- src/pages/LoginPage.test.tsx src/pages/RegisterPage.test.tsx
@@ -684,7 +684,7 @@ bun run test -- src/pages/LoginPage.test.tsx src/pages/RegisterPage.test.tsx
 
 Expected: FAIL because pages and router do not exist.
 
-- [ ] **Step 4: 实现统一 API 客户端**
+- [x] **Step 4: 实现统一 API 客户端**
 
 `client.ts` 同时导出 `apiRequest` 和 `apiFetchRaw`：
 
@@ -746,7 +746,7 @@ export async function ensureCsrf() {
 
 保留 `ApiError` 的 `detail` 和 `errors` 字段，供表单展示。
 
-- [ ] **Step 5: 实现 AuthGate**
+- [x] **Step 5: 实现 AuthGate**
 
 `RequireAuth` 通过 `useCurrentUser()`：
 
@@ -758,7 +758,7 @@ export async function ensureCsrf() {
 
 登录后的 `next` 只接受以单个 `/` 开头且不以 `//` 开头的站内路径，其他值一律回退 `/workspace`。
 
-- [ ] **Step 6: 实现登录和注册页面**
+- [x] **Step 6: 实现登录和注册页面**
 
 使用 React Hook Form + Zod。登录字段为邮箱、密码；注册字段为邮箱、密码、确认密码。
 
@@ -771,7 +771,7 @@ export async function ensureCsrf() {
 - API 字段错误映射到对应 input。
 - 登录页链接 `/register`，注册页链接 `/login`。
 
-- [ ] **Step 7: 配置 Vite 同源代理**
+- [x] **Step 7: 配置 Vite 同源代理**
 
 ```ts
 server: {
@@ -792,7 +792,7 @@ server: {
 VITE_CALC_API=/api/v1
 ```
 
-- [ ] **Step 8: 运行测试与构建**
+- [x] **Step 8: 运行测试与构建**
 
 ```powershell
 bun run test -- src/pages/LoginPage.test.tsx src/pages/RegisterPage.test.tsx
@@ -801,7 +801,7 @@ bun run check-types
 
 Expected: tests PASS，TypeScript 无错误。
 
-- [ ] **Step 9: 提交**
+- [x] **Step 9: 提交**
 
 ```powershell
 git add apps/calc/package.json bun.lock apps/calc/vite.config.ts apps/calc/tsconfig.json apps/calc/src/index.css apps/calc/.env.example apps/calc/components.json apps/calc/src/components/ui apps/calc/src/api/client.ts apps/calc/src/api/auth.ts apps/calc/src/auth/AuthGate.tsx apps/calc/src/pages/AuthLayout.tsx apps/calc/src/pages/LoginPage.tsx apps/calc/src/pages/RegisterPage.tsx apps/calc/src/pages/LoginPage.test.tsx apps/calc/src/pages/RegisterPage.test.tsx apps/calc/src/test/setup.ts
@@ -834,7 +834,7 @@ git commit -m "feat(calc): add routed authentication pages"
   - `createProject`, `updateProject`, `deleteProject`
   - `ProjectFormValues`
 
-- [ ] **Step 1: 写工作台 RED 测试**
+- [x] **Step 1: 写工作台 RED 测试**
 
 ```tsx
 // apps/calc/src/pages/WorkspacePage.test.tsx
@@ -903,7 +903,7 @@ describe('WorkspacePage', () => {
 - 清空项目名称不能提交。
 - 选择“上海”后提交 payload 含 `region: '上海'`。
 
-- [ ] **Step 2: 确认 RED**
+- [x] **Step 2: 确认 RED**
 
 ```powershell
 cd apps/calc
@@ -912,7 +912,7 @@ bun run test -- src/pages/WorkspacePage.test.tsx src/components/ProjectFormDialo
 
 Expected: FAIL because workspace components do not exist.
 
-- [ ] **Step 3: 扩展项目 API**
+- [x] **Step 3: 扩展项目 API**
 
 `ProjectRecord` 增加：
 
@@ -938,7 +938,7 @@ export function useProjects(filters: { search: string; status?: ProjectStatus })
 }
 ```
 
-- [ ] **Step 4: 实现工作台 A 布局**
+- [x] **Step 4: 实现工作台 A 布局**
 
 页面由以下区域组成：
 
@@ -956,7 +956,7 @@ export function useProjects(filters: { search: string; status?: ProjectStatus })
 - Dropdown Menu 提供编辑和删除。
 - 删除打开 AlertDialog，说明会级联删除方案。
 
-- [ ] **Step 5: 实现项目表单**
+- [x] **Step 5: 实现项目表单**
 
 使用 React Hook Form + Zod：
 
@@ -982,7 +982,7 @@ navigate(`/projects/${project.project_id}/calc`)
 
 “仅创建”成功后关闭对话框并停留工作台。
 
-- [ ] **Step 6: 实现状态、空态和错误态**
+- [x] **Step 6: 实现状态、空态和错误态**
 
 - 筹备中：琥珀 Badge。
 - 计算中：墨绿 Badge。
@@ -992,7 +992,7 @@ navigate(`/projects/${project.project_id}/calc`)
 - 列表错误：Alert + 重试。
 - 加载：稳定表格 Skeleton。
 
-- [ ] **Step 7: 运行测试与构建**
+- [x] **Step 7: 运行测试与构建**
 
 ```powershell
 bun run test -- src/pages/WorkspacePage.test.tsx src/components/ProjectFormDialog.test.tsx
@@ -1002,7 +1002,7 @@ bun run build
 
 Expected: all PASS。
 
-- [ ] **Step 8: 提交**
+- [x] **Step 8: 提交**
 
 ```powershell
 git add apps/calc/src/api/calc.ts apps/calc/src/api/projects.ts apps/calc/src/components/UserMenu.tsx apps/calc/src/components/StatusBadge.tsx apps/calc/src/components/ProjectFormDialog.tsx apps/calc/src/components/ProjectTable.tsx apps/calc/src/components/WorkspaceHeader.tsx apps/calc/src/pages/WorkspacePage.tsx apps/calc/src/pages/WorkspacePage.test.tsx apps/calc/src/components/ProjectFormDialog.test.tsx apps/calc/src/index.css
@@ -1030,7 +1030,7 @@ git commit -m "feat(calc): add project workspace"
 - Consumes: Task 4 `useProject(projectId)`。
 - Produces: `CalcWorkspacePage` 项目上下文条和 `onBack()`。
 
-- [ ] **Step 1: 写计算页上下文 RED 测试**
+- [x] **Step 1: 写计算页上下文 RED 测试**
 
 ```tsx
 // apps/calc/src/pages/CalcWorkspacePage.test.tsx
@@ -1070,7 +1070,7 @@ describe('CalcWorkspacePage', () => {
 
 更新 `SchemeDialog.test.tsx`，断言对话框不再显示项目搜索和项目切换，只调用当前 `projectId` 的方案 API。
 
-- [ ] **Step 2: 确认 RED**
+- [x] **Step 2: 确认 RED**
 
 ```powershell
 bun run test -- src/pages/CalcWorkspacePage.test.tsx src/components/SchemeDialog.test.tsx
@@ -1078,7 +1078,7 @@ bun run test -- src/pages/CalcWorkspacePage.test.tsx src/components/SchemeDialog
 
 Expected: FAIL because calculation page has no project route/context.
 
-- [ ] **Step 3: 把现有计算器移入 `CalcWorkspacePage` 并完成路由**
+- [x] **Step 3: 把现有计算器移入 `CalcWorkspacePage` 并完成路由**
 
 现有 `App.tsx` 主体移入 `CalcWorkspacePage`：
 
@@ -1122,7 +1122,7 @@ export function CalcWorkspacePage() {
 
 `RootRedirect` 已登录时去 `/workspace`，未登录时去 `/login`。原 `App.test.tsx` 的三联、筛选、平面视图和参数修改断言迁入 `CalcWorkspacePage.test.tsx`；`App.test.tsx` 改为只测试未认证进入登录、认证后进入工作台、项目路由渲染计算页。
 
-- [ ] **Step 4: 修改 TopBar 与方案入口**
+- [x] **Step 4: 修改 TopBar 与方案入口**
 
 - TopBar 显示项目名、地区、状态和当前方案。
 - 删除“未选择项目”行为；项目上下文由路由保证。
@@ -1130,7 +1130,7 @@ export function CalcWorkspacePage() {
 - “方案”只打开当前项目的方案列表。
 - 不在计算页创建或切换项目。
 
-- [ ] **Step 5: 将 `api/calc.ts` 切到统一客户端**
+- [x] **Step 5: 将 `api/calc.ts` 切到统一客户端**
 
 所有 fetch 改为 `apiRequest`，保留现有导出下载函数：
 
@@ -1143,7 +1143,7 @@ const response = await apiFetchRaw('/report.docx', {
 
 `apiFetchRaw` 同样附带 Cookie 和 CSRF，但返回原始 `Response` 以支持 Blob 下载。
 
-- [ ] **Step 6: 运行目标测试**
+- [x] **Step 6: 运行目标测试**
 
 ```powershell
 bun run test -- src/pages/CalcWorkspacePage.test.tsx src/components/TopBar.test.tsx src/components/SchemeDialog.test.tsx
@@ -1152,7 +1152,7 @@ bun run check-types
 
 Expected: all PASS。
 
-- [ ] **Step 7: 提交**
+- [x] **Step 7: 提交**
 
 ```powershell
 git add apps/calc/src/pages/CalcWorkspacePage.tsx apps/calc/src/pages/CalcWorkspacePage.test.tsx apps/calc/src/App.tsx apps/calc/src/main.tsx apps/calc/src/App.test.tsx apps/calc/src/components/TopBar.tsx apps/calc/src/components/TopBar.test.tsx apps/calc/src/components/SchemeDialog.tsx apps/calc/src/components/SchemeDialog.test.tsx apps/calc/src/api/calc.ts apps/calc/src/test/setup.ts
@@ -1174,7 +1174,7 @@ git commit -m "feat(calc): scope calculator to project"
 - Consumes: Tasks 1–5。
 - Produces: 可重复的后端、前端和浏览器验收证据。
 
-- [ ] **Step 1: 允许隔离的临时 SQLite 路径**
+- [x] **Step 1: 允许隔离的临时 SQLite 路径**
 
 在 `settings.py` 的 SQLite 分支使用：
 
@@ -1184,7 +1184,7 @@ git commit -m "feat(calc): scope calculator to project"
 
 浏览器验收使用 `$env:TEMP` 下的新 SQLite 文件，避免污染日常数据。
 
-- [ ] **Step 2: 写浏览器验收脚本**
+- [x] **Step 2: 写浏览器验收脚本**
 
 `scripts/verify-calc-auth-workspace.py` 使用 Playwright 系统 Chrome：
 
@@ -1229,7 +1229,7 @@ with sync_playwright() as p:
 - `BrowserRouter` 深链 `/workspace` 可由 Vite fallback 加载。
 - 未登录时 API 返回 401。
 
-- [ ] **Step 4: 后端全量**
+- [x] **Step 4: 后端全量**
 
 ```powershell
 cd services/calc-api
@@ -1251,7 +1251,7 @@ bun run test:e2e
 
 Expected: 所有 Vitest、build、smoke PASS。
 
-- [ ] **Step 6: 真实浏览器闭环**
+- [x] **Step 6: 真实浏览器闭环**
 
 使用临时数据库启动 Django `127.0.0.1:8001` 和 Vite `127.0.0.1:5179`：
 
@@ -1274,7 +1274,7 @@ python scripts/verify-calc-auth-workspace.py
 9. 桌面 1440px 与手机 390px 均无横向溢出。
 10. 零未处理控制台错误和 5xx。
 
-- [ ] **Step 7: 文档与清理**
+- [x] **Step 7: 文档与清理**
 
 `docs/qa/2026-10-27-auth-project-workspace.md` 记录：
 
@@ -1285,7 +1285,7 @@ python scripts/verify-calc-auth-workspace.py
 - 未实现邮件验证、找回密码、团队共享。
 - 临时服务已停止、临时数据库已清理。
 
-- [ ] **Step 8: 最终检查**
+- [x] **Step 8: 最终检查**
 
 ```powershell
 git diff --check -- services/calc-api apps/calc scripts/verify-calc-auth-workspace.py docs/qa/2026-10-27-auth-project-workspace.md
@@ -1294,7 +1294,7 @@ git status --short
 
 Expected: 无空白错误；仅本功能文件进入提交；无关既有改动保持原状。
 
-- [ ] **Step 9: 提交**
+- [x] **Step 9: 提交**
 
 ```powershell
 git add services/calc-api/calcapi/settings.py apps/calc/scripts/smoke.mjs apps/calc/package.json scripts/verify-calc-auth-workspace.py docs/qa/2026-10-27-auth-project-workspace.md
