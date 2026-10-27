@@ -84,7 +84,7 @@ describe('ProjectManagementPage', () => {
     expect(screen.queryByText('计算方案')).not.toBeInTheDocument()
   })
 
-  it('keeps the global project total when filters change', async () => {
+  it('labels the current project list without claiming a complete total', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(async (input: RequestInfo | URL) => {
@@ -99,10 +99,10 @@ describe('ProjectManagementPage', () => {
 
     renderProjectManagement()
 
-    expect(await screen.findByText('共 2 个项目')).toBeInTheDocument()
+    expect(await screen.findByText('当前列表 2 个项目（最近上限 200）')).toBeInTheDocument()
     fireEvent.change(screen.getByLabelText('搜索项目'), { target: { value: '滨江' } })
 
-    expect(await screen.findByText('共 2 个项目 · 当前筛选 1 个')).toBeInTheDocument()
-    expect(screen.queryByText('共 1 个项目')).not.toBeInTheDocument()
+    expect(await screen.findByText('当前列表 1 个项目（最近上限 200）')).toBeInTheDocument()
+    expect(screen.queryByText(/共 \d+ 个项目/)).not.toBeInTheDocument()
   })
 })

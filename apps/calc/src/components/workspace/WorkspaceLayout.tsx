@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { WorkspaceHeader } from '../WorkspaceHeader'
-import { WorkspaceMobileDirectory } from './WorkspaceMobileDirectory'
+import { WORKSPACE_DIRECTORY_ID, WorkspaceMobileDirectory } from './WorkspaceMobileDirectory'
 import { WorkspaceSidebar } from './WorkspaceSidebar'
 
 export function WorkspaceLayout() {
@@ -14,7 +14,11 @@ export function WorkspaceLayout() {
 
   return (
     <div className="min-h-screen bg-[#f4f5f6]">
-      <WorkspaceHeader onOpenDirectory={() => setDirectoryOpen(true)} />
+      <WorkspaceHeader
+        onOpenDirectory={() => setDirectoryOpen(true)}
+        directoryOpen={directoryOpen}
+        directoryControls={WORKSPACE_DIRECTORY_ID}
+      />
       <WorkspaceMobileDirectory open={directoryOpen} onOpenChange={setDirectoryOpen} />
       <div className="mx-auto flex w-full max-w-[1660px]">
         <aside className="hidden w-[232px] shrink-0 lg:block">

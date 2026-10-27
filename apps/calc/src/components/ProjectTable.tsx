@@ -28,7 +28,7 @@ const features = tableFeatures({})
 const columnHelper = createColumnHelper<typeof features, ProjectRecord>()
 
 const ROW_GRID =
-  'grid grid-cols-[minmax(0,1fr)_88px_96px] items-center gap-2 md:grid-cols-[minmax(220px,2fr)_100px_110px_80px_150px_150px_140px]'
+  'grid grid-cols-[minmax(0,1fr)_88px_96px] items-center gap-2 xl:grid-cols-[minmax(180px,2fr)_90px_96px_72px_128px_128px_128px]'
 
 function formatDate(value: string | null) {
   if (!value) return '尚未计算'
@@ -85,7 +85,7 @@ export function ProjectTable({
         }),
         columnHelper.accessor('region', {
           header: '地区',
-          cell: ({ row }) => <span className="hidden text-xs md:block">{row.original.region}</span>,
+          cell: ({ row }) => <span className="hidden text-xs xl:block">{row.original.region}</span>,
         }),
         columnHelper.accessor('status', {
           header: '状态',
@@ -94,14 +94,14 @@ export function ProjectTable({
         columnHelper.accessor('scheme_count', {
           header: '方案数',
           cell: ({ row }) => (
-            <span className="tnum hidden text-sm md:block">{row.original.scheme_count}</span>
+            <span className="tnum hidden text-sm xl:block">{row.original.scheme_count}</span>
           ),
         }),
         columnHelper.display({
           id: 'last-calculated',
           header: '最近计算',
           cell: ({ row }) => (
-            <span className="tnum hidden text-xs text-[#71717a] lg:block">
+            <span className="tnum hidden text-xs text-[#71717a] xl:block">
               {formatDate(row.original.last_calculated_at)}
             </span>
           ),
@@ -110,7 +110,7 @@ export function ProjectTable({
           id: 'updated',
           header: '更新时间',
           cell: ({ row }) => (
-            <span className="tnum hidden text-xs text-[#71717a] lg:block">
+            <span className="tnum hidden text-xs text-[#71717a] xl:block">
               {formatDate(row.original.updated_at)}
             </span>
           ),
@@ -126,7 +126,7 @@ export function ProjectTable({
                 onClick={() => onEnter(row.original)}
                 aria-label={`进入计算 ${row.original.name}`}
               >
-                <span className="hidden sm:inline">进入计算</span>
+                <span className="hidden xl:inline">进入计算</span>
                 <ArrowRight />
               </Button>
               <DropdownMenu>
@@ -214,11 +214,11 @@ export function ProjectTable({
               <Skeleton className="h-4 w-36" />
               <Skeleton className="h-3 w-20" />
             </div>
-            <Skeleton className="hidden h-5 w-14 md:block" />
+            <Skeleton className="hidden h-5 w-14 xl:block" />
             <Skeleton className="h-5 w-16" />
-            <Skeleton className="hidden h-4 w-8 md:block" />
-            <Skeleton className="hidden h-4 w-28 lg:block" />
-            <Skeleton className="hidden h-4 w-28 lg:block" />
+            <Skeleton className="hidden h-4 w-8 xl:block" />
+            <Skeleton className="hidden h-4 w-28 xl:block" />
+            <Skeleton className="hidden h-4 w-28 xl:block" />
             <Skeleton className="h-8 w-24 justify-self-end" />
           </div>
         ))}
@@ -280,7 +280,7 @@ export function ProjectTable({
                 tabIndex={-1}
                 className={
                   index === 1 || index === 3 || index === 4 || index === 5
-                    ? 'hidden md:block'
+                    ? 'hidden xl:block'
                     : index === 6
                       ? 'text-right'
                       : ''
@@ -327,7 +327,7 @@ export function ProjectTable({
                         role="cell"
                         className={
                           index === 1 || index === 3 || index === 4 || index === 5
-                            ? 'hidden md:block'
+                            ? 'hidden xl:block'
                             : ''
                         }
                       >

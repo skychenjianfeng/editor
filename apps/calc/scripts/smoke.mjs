@@ -54,6 +54,52 @@ async function waitForWorkspaceRoute(path, heading, activeLink) {
   if ((await active.getAttribute('aria-current')) !== 'page') {
     throw new Error(`${path} did not mark ${activeLink} as the active directory entry`)
   }
+
+  const expectedBackground = [18, 59, 50]
+  const expectedForeground = [255, 255, 255]
+  const activeStyle = await active.evaluate(
+    async (element, expected) => {
+      const parseRgb = (value) => {
+        const match = value.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)$/)
+        return match ? match.slice(1, 4).map(Number) : null
+      }
+      const matches = (actual, wanted) =>
+        JSON.stringify(parseRgb(actual)) === JSON.stringify(wanted)
+      const deadline = performance.now() + 2_000
+      while (performance.now() < deadline) {
+        const style = getComputedStyle(element)
+        if (
+          matches(style.backgroundColor, expected.background) &&
+          matches(style.color, expected.foreground)
+        ) {
+          return {
+            backgroundColor: style.backgroundColor,
+            color: style.color,
+          }
+        }
+        await new Promise((resolve) => requestAnimationFrame(resolve))
+      }
+      const style = getComputedStyle(element)
+      return {
+        backgroundColor: style.backgroundColor,
+        color: style.color,
+      }
+    },
+    { background: expectedBackground, foreground: expectedForeground },
+  )
+  const parseRgb = (value) => {
+    const match = value.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)$/)
+    return match ? match.slice(1, 4).map(Number) : null
+  }
+  if (
+    JSON.stringify(parseRgb(activeStyle.backgroundColor)) !==
+      JSON.stringify(expectedBackground) ||
+    JSON.stringify(parseRgb(activeStyle.color)) !== JSON.stringify(expectedForeground)
+  ) {
+    throw new Error(
+      `${path} active directory colors were background=${activeStyle.backgroundColor}, color=${activeStyle.color}`,
+    )
+  }
 }
 
 async function assertNoHorizontalOverflow(label) {
@@ -66,6 +112,33 @@ async function assertNoHorizontalOverflow(label) {
     throw new Error(
       `${label} overflowed horizontally: viewport=${metrics.viewport} html=${metrics.html} body=${metrics.body}`,
     )
+  }
+}
+
+async function assertProjectActionsVisible(row, projectName) {
+  const table = page.getByRole('table', { name: '项目列表', exact: true })
+  const tableBox = await table.boundingBox()
+  const rowBox = await row.boundingBox()
+  if (!tableBox || !rowBox) {
+    throw new Error(`project table or ${projectName} row had no visible box`)
+  }
+
+  const actionButtons = row.getByRole('button')
+  const actionButtonCount = await actionButtons.count()
+  if (actionButtonCount !== 2) {
+    throw new Error(`${projectName} row exposed ${actionButtonCount} action buttons`)
+  }
+  for (let index = 0; index < actionButtonCount; index += 1) {
+    const buttonBox = await actionButtons.nth(index).boundingBox()
+    if (
+      !buttonBox ||
+      buttonBox.x < tableBox.x ||
+      buttonBox.x + buttonBox.width > tableBox.x + tableBox.width ||
+      buttonBox.y < rowBox.y ||
+      buttonBox.y + buttonBox.height > rowBox.y + rowBox.height
+    ) {
+      throw new Error(`${projectName} action button ${index + 1} was clipped at 1024px`)
+    }
   }
 }
 
@@ -167,6 +240,9 @@ try {
     await page.getByRole('link', { name: '项目管理', exact: true }).click()
     await waitForWorkspaceRoute('/workspace/projects', '项目管理', '项目管理')
 
+    await page.setViewportSize({ width: 1024, height: 900 })
+    await assertNoHorizontalOverflow('1024 /workspace/projects')
+
     qaProjectName = `QA 玄构天枢 ${Date.now()} ${randomUUID().slice(0, 8)}`
     qaProjectNeedsCleanup = true
     await page.getByRole('button', { name: '新建项目', exact: true }).click()
@@ -196,8 +272,8 @@ try {
 
     const createdRow = page.getByRole('row').filter({ hasText: qaProjectName })
     await createdRow.waitFor()
-    await createdRow.getByText('全国', { exact: true }).waitFor()
     await createdRow.getByText('筹备中', { exact: true }).waitFor()
+    await assertProjectActionsVisible(createdRow, qaProjectName)
 
     await createdRow
       .getByRole('button', { name: `更多操作 ${qaProjectName}`, exact: true })
@@ -239,8 +315,8 @@ try {
     await readResponsePromise
     const editedRow = page.getByRole('row').filter({ hasText: qaProjectName })
     await editedRow.waitFor()
-    await editedRow.getByText('上海', { exact: true }).waitFor()
     await editedRow.getByText('计算中', { exact: true }).waitFor()
+    await assertProjectActionsVisible(editedRow, qaProjectName)
 
     await editedRow
       .getByRole('button', { name: `进入计算 ${qaProjectName}`, exact: true })
@@ -277,15 +353,30 @@ try {
     qaProjectId = undefined
     await deleteDialog.waitFor({ state: 'detached', timeout: 15_000 })
     await rowForDeletion.waitFor({ state: 'detached', timeout: 15_000 })
+    await assertNoHorizontalOverflow('1024 /workspace/projects after delete')
 
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto(appUrl('/workspace'), { waitUntil: 'networkidle' })
     await page.getByRole('heading', { name: '项目工作台', exact: true }).waitFor()
     await assertNoHorizontalOverflow('mobile /workspace')
 
-    await page.getByRole('button', { name: '打开工作台目录', exact: true }).click()
+    const directoryTrigger = page.locator('button[aria-label="打开工作台目录"]')
+    if ((await directoryTrigger.getAttribute('aria-expanded')) !== 'false') {
+      throw new Error('mobile directory trigger was not initially collapsed')
+    }
+    const directoryControls = await directoryTrigger.getAttribute('aria-controls')
+    if (!directoryControls) {
+      throw new Error('mobile directory trigger had no aria-controls target')
+    }
+    await directoryTrigger.click()
+    if ((await directoryTrigger.getAttribute('aria-expanded')) !== 'true') {
+      throw new Error('mobile directory trigger was not expanded while the drawer was open')
+    }
     const mobileDirectory = page.getByRole('dialog', { name: '工作台目录' })
     await mobileDirectory.waitFor()
+    if ((await mobileDirectory.getAttribute('id')) !== directoryControls) {
+      throw new Error('mobile directory id did not match the trigger aria-controls target')
+    }
     const directoryBox = await mobileDirectory.boundingBox()
     if (!directoryBox || Math.abs(directoryBox.x) > 1 || directoryBox.width > 336) {
       throw new Error('mobile directory was not anchored to the left edge within its width limit')
@@ -296,6 +387,9 @@ try {
       .getByRole('button', { name: 'Close', exact: true })
       .click()
     await mobileDirectory.waitFor({ state: 'detached', timeout: 15_000 })
+    if ((await directoryTrigger.getAttribute('aria-expanded')) !== 'false') {
+      throw new Error('mobile directory trigger stayed expanded after closing')
+    }
     await page.getByRole('heading', { name: '项目工作台', exact: true }).waitFor()
 
     await page.getByRole('button', { name: '打开工作台目录', exact: true }).click()
@@ -316,7 +410,7 @@ try {
     assertBrowserClean()
 
     successMessage =
-      'smoke ok: dev-login=prefilled routes=4 active=desktop desktop-nav=232px mobile-close=button+escape+navigation viewport=1440+390 overflow=none console-errors=0 qa-project=ui-crud+calc+ui-deleted cleanup=finally'
+      'smoke ok: dev-login=prefilled routes=4 active=desktop+computed-colors desktop-nav=232px mobile-expanded=aria desktop-directory=true mobile-close=button+escape+navigation viewport=1440+1024+390 overflow=none console-errors=0 qa-project=ui-crud+1024-actions-visible+calc+1024-ui-deleted cleanup=finally'
   } else {
     const workspaceResponse = await page.goto(appUrl('/workspace'), {
       waitUntil: 'domcontentloaded',

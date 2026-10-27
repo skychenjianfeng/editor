@@ -16,6 +16,7 @@ import { useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   deleteProject,
+  PROJECT_LIST_LIMIT,
   PROJECT_STATUSES,
   type ProjectRecord,
   type ProjectStatus,
@@ -28,7 +29,7 @@ import { Button } from '../ui/button'
 import { Skeleton } from '../ui/skeleton'
 
 const metricCards = [
-  { key: 'all', label: '全部项目', icon: FolderPlus, tone: 'text-[#52525b] bg-[#f4f4f5]' },
+  { key: 'all', label: '近期项目', icon: FolderPlus, tone: 'text-[#52525b] bg-[#f4f4f5]' },
   { key: 'calculating', label: '计算中', icon: Calculator, tone: 'text-[#176b55] bg-[#e7f3ee]' },
   { key: 'schemes', label: '计算方案', icon: Layers3, tone: 'text-[#3f566f] bg-[#edf1f7]' },
   { key: 'completed', label: '已完成', icon: CheckCircle2, tone: 'text-[#8a5800] bg-[#fff7e6]' },
@@ -90,21 +91,12 @@ export function ProjectWorkspacePanel({ variant }: { variant: 'overview' | 'mana
 
   let managementSummary = ''
   if (variant === 'management') {
-    if (allProjects.isError) {
-      managementSummary = '项目总数读取失败'
-    } else if (allProjects.isPending || !globalProjects) {
-      managementSummary = '正在读取项目总数…'
+    if (projects.isError) {
+      managementSummary = '当前项目列表读取失败'
+    } else if (projects.isPending || !filteredProjects) {
+      managementSummary = `正在读取当前项目列表（最近上限 ${PROJECT_LIST_LIMIT} 个项目）…`
     } else {
-      managementSummary = `共 ${globalProjects.length} 个项目`
-    }
-
-    if (hasFilters) {
-      const filteredSummary = projects.isError
-        ? '当前筛选读取失败'
-        : projects.isPending || !filteredProjects
-          ? '正在读取当前筛选结果…'
-          : `当前筛选 ${filteredProjects.length} 个`
-      managementSummary = `${managementSummary} · ${filteredSummary}`
+      managementSummary = `当前列表 ${filteredProjects.length} 个项目（最近上限 ${PROJECT_LIST_LIMIT}）`
     }
   }
 
@@ -176,40 +168,49 @@ export function ProjectWorkspacePanel({ variant }: { variant: 'overview' | 'mana
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
-                {metricCards.map((card, index) => {
-                  const Icon = card.icon
-                  const value =
-                    card.key === 'all'
-                      ? metrics.all
-                      : card.key === 'calculating'
-                        ? metrics.calculating
-                        : card.key === 'schemes'
-                          ? metrics.schemes
-                          : metrics.completed
-                  return (
-                    <motion.div
-                      key={card.key}
-                      initial={reducedMotion ? false : { opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.16, delay: reducedMotion ? 0 : index * 0.035 }}
-                      className="rounded-lg border bg-white p-4 shadow-[0_1px_2px_rgba(24,24,27,0.03)]"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="text-[11px] font-medium text-[#71717a]">{card.label}</div>
-                          <div className="tnum mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-                            {value}
+              <>
+                <p className="mb-2 text-xs text-[#71717a]">
+                  指标基于最近最多 {PROJECT_LIST_LIMIT} 个项目计算。
+                </p>
+                <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+                  {metricCards.map((card, index) => {
+                    const Icon = card.icon
+                    const value =
+                      card.key === 'all'
+                        ? metrics.all
+                        : card.key === 'calculating'
+                          ? metrics.calculating
+                          : card.key === 'schemes'
+                            ? metrics.schemes
+                            : metrics.completed
+                    return (
+                      <motion.div
+                        key={card.key}
+                        initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.16, delay: reducedMotion ? 0 : index * 0.035 }}
+                        className="rounded-lg border bg-white p-4 shadow-[0_1px_2px_rgba(24,24,27,0.03)]"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <div className="text-[11px] font-medium text-[#71717a]">
+                              {card.label}
+                            </div>
+                            <div className="tnum mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+                              {value}
+                            </div>
                           </div>
+                          <span
+                            className={`grid size-9 place-items-center rounded-lg ${card.tone}`}
+                          >
+                            <Icon className="size-4" />
+                          </span>
                         </div>
-                        <span className={`grid size-9 place-items-center rounded-lg ${card.tone}`}>
-                          <Icon className="size-4" />
-                        </span>
-                      </div>
-                    </motion.div>
-                  )
-                })}
-              </div>
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              </>
             )}
           </section>
         )}
@@ -228,7 +229,7 @@ export function ProjectWorkspacePanel({ variant }: { variant: 'overview' | 'mana
               {variant === 'overview' && (
                 <Button asChild variant="outline" size="sm">
                   <Link to="/workspace/projects">
-                    查看全部项目
+                    打开项目管理
                     <ArrowRight />
                   </Link>
                 </Button>

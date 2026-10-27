@@ -34,33 +34,41 @@ describe('WorkspaceLayout', () => {
   it('shows all directory entries and marks the active route', () => {
     renderLayout('/workspace/projects')
 
-    expect(screen.getByRole('navigation', { name: '工作台目录' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: '工作台' })).toHaveAttribute('href', '/workspace')
-    expect(screen.getByRole('link', { name: '项目管理' })).toHaveAttribute(
-      'href',
-      '/workspace/projects',
+    const directory = screen.getByRole('navigation', { name: '工作台目录' })
+    expect(within(directory).getByText('工作台目录')).toBeVisible()
+    expect(
+      within(directory)
+        .getAllByRole('link')
+        .map((link) => [link.textContent?.trim(), link.getAttribute('href')]),
+    ).toEqual([
+      ['工作台', '/workspace'],
+      ['项目管理', '/workspace/projects'],
+      ['系统设置', '/workspace/settings'],
+      ['回收站', '/workspace/recycle-bin'],
+    ])
+    expect(within(directory).getByRole('link', { name: '项目管理' })).toHaveAttribute(
+      'aria-current',
+      'page',
     )
-    expect(screen.getByRole('link', { name: '系统设置' })).toHaveAttribute(
-      'href',
-      '/workspace/settings',
-    )
-    expect(screen.getByRole('link', { name: '回收站' })).toHaveAttribute(
-      'href',
-      '/workspace/recycle-bin',
-    )
-    expect(screen.getByRole('link', { name: '项目管理' })).toHaveAttribute('aria-current', 'page')
   })
 
   it('opens the mobile directory and closes it after navigation', async () => {
     const user = userEvent.setup()
     renderLayout('/workspace')
 
-    await user.click(screen.getByRole('button', { name: '打开工作台目录' }))
+    const trigger = screen.getByRole('button', { name: '打开工作台目录' })
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    expect(trigger).toHaveAttribute('aria-controls', 'workspace-directory-drawer')
+
+    await user.click(trigger)
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
     const directory = screen.getByRole('dialog', { name: '工作台目录' })
+    expect(directory).toHaveAttribute('id', 'workspace-directory-drawer')
 
     await user.click(within(directory).getByRole('link', { name: '系统设置' }))
 
     expect(await screen.findByRole('heading', { name: '系统设置' })).toBeInTheDocument()
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await waitFor(() =>
       expect(screen.queryByRole('dialog', { name: '工作台目录' })).not.toBeInTheDocument(),
     )

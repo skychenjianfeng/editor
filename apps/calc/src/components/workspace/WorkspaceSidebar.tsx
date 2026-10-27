@@ -31,7 +31,10 @@ export function WorkspaceSidebar({
       aria-label="工作台目录"
       className={cn('overflow-y-auto border-r border-[#e4e4e7] bg-white px-3 py-5', className)}
     >
-      <div className="space-y-6">
+      <div className="px-3 text-[11px] font-semibold tracking-[0.16em] text-[#52525b]">
+        工作台目录
+      </div>
+      <div className="mt-5 space-y-6">
         {sections.map((section) => (
           <section key={section.label}>
             <h2 className="px-3 text-[10px] font-semibold tracking-[0.16em] text-[#a1a1aa]">

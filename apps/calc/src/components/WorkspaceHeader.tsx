@@ -3,7 +3,15 @@ import { Link } from 'react-router-dom'
 import { BRAND_MARK, BRAND_NAME } from '../branding'
 import { UserMenu } from './UserMenu'
 
-export function WorkspaceHeader({ onOpenDirectory }: { onOpenDirectory?: () => void }) {
+export function WorkspaceHeader({
+  onOpenDirectory,
+  directoryOpen = false,
+  directoryControls,
+}: {
+  onOpenDirectory?: () => void
+  directoryOpen?: boolean
+  directoryControls?: string
+}) {
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-[#102a24] text-white shadow-sm">
       <div className="mx-auto flex h-14 max-w-[1480px] items-center gap-5 px-4 sm:px-6">
@@ -11,6 +19,8 @@ export function WorkspaceHeader({ onOpenDirectory }: { onOpenDirectory?: () => v
           <button
             type="button"
             aria-label="打开工作台目录"
+            aria-expanded={directoryOpen}
+            aria-controls={directoryControls}
             onClick={onOpenDirectory}
             className="grid size-8 shrink-0 place-items-center rounded-md text-white/75 outline-none hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-lime-200 lg:hidden"
           >

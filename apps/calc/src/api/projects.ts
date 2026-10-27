@@ -70,8 +70,10 @@ export type ProjectFilters = {
   status?: ProjectStatus
 }
 
+export const PROJECT_LIST_LIMIT = 200
+
 function projectQuery(filters: ProjectFilters) {
-  const query = new URLSearchParams({ limit: '200' })
+  const query = new URLSearchParams({ limit: String(PROJECT_LIST_LIMIT) })
   if (filters.search.trim()) query.set('search', filters.search.trim())
   if (filters.status) query.set('status', filters.status)
   return query.toString()

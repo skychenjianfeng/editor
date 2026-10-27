@@ -35,6 +35,9 @@ describe('WorkspaceSettingsPage', () => {
     expect(screen.getByText('玄构天枢')).toBeInTheDocument()
     expect(screen.getByText('数据归属')).toBeInTheDocument()
     expect(screen.getByText('会话说明')).toBeInTheDocument()
+    expect(
+      screen.getByText('登录状态由 Session Cookie 维护，写请求受 CSRF 保护；退出后需重新登录。'),
+    ).toBeInTheDocument()
     expect(screen.getByText('地区只作为项目属性，不切换当前计算规范。')).toBeInTheDocument()
     expect(screen.queryByRole('switch')).not.toBeInTheDocument()
   })

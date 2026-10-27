@@ -82,10 +82,12 @@ describe('WorkspacePage', () => {
     expect(screen.getAllByText('上海').length).toBeGreaterThan(0)
     expect(screen.getAllByText('计算中').length).toBeGreaterThan(0)
     expect(screen.getByText('计算方案')).toBeInTheDocument()
+    expect(screen.getByText('近期项目')).toBeInTheDocument()
+    expect(screen.getByText('指标基于最近最多 200 个项目计算。')).toBeInTheDocument()
     expect(screen.getByText('11')).toBeInTheDocument()
     expect(screen.getByText('PM-018')).toBeInTheDocument()
     expect(screen.getByText('最近项目')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: '查看全部项目' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: '打开项目管理' })).toHaveAttribute(
       'href',
       '/workspace/projects',
     )

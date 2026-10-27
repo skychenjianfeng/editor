@@ -85,7 +85,7 @@ export function WorkspaceSettingsPage() {
               会话说明
             </dt>
             <dd className="text-sm leading-6 text-[#52525b]">
-              登录状态由当前浏览器会话维护；如需切换账号，请使用页面右上角的账号菜单。
+              登录状态由 Session Cookie 维护，写请求受 CSRF 保护；退出后需重新登录。
             </dd>
           </div>
         </dl>
