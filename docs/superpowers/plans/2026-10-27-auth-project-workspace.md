@@ -572,6 +572,8 @@ git commit -m "feat(calc): isolate projects and runs by owner"
 **Files:**
 - Modify: `apps/calc/package.json`
 - Modify: `apps/calc/vite.config.ts`
+- Modify: `apps/calc/tsconfig.json`
+- Modify: `apps/calc/src/index.css`
 - Create: `apps/calc/.env.example`
 - Create: `apps/calc/components.json`
 - Create: `apps/calc/src/components/ui/button.tsx`
@@ -802,7 +804,7 @@ Expected: tests PASS，TypeScript 无错误。
 - [ ] **Step 9: 提交**
 
 ```powershell
-git add apps/calc/package.json bun.lock apps/calc/vite.config.ts apps/calc/.env.example apps/calc/components.json apps/calc/src/components/ui apps/calc/src/api/client.ts apps/calc/src/api/auth.ts apps/calc/src/auth/AuthGate.tsx apps/calc/src/pages/AuthLayout.tsx apps/calc/src/pages/LoginPage.tsx apps/calc/src/pages/RegisterPage.tsx apps/calc/src/pages/LoginPage.test.tsx apps/calc/src/pages/RegisterPage.test.tsx apps/calc/src/test/setup.ts
+git add apps/calc/package.json bun.lock apps/calc/vite.config.ts apps/calc/tsconfig.json apps/calc/src/index.css apps/calc/.env.example apps/calc/components.json apps/calc/src/components/ui apps/calc/src/api/client.ts apps/calc/src/api/auth.ts apps/calc/src/auth/AuthGate.tsx apps/calc/src/pages/AuthLayout.tsx apps/calc/src/pages/LoginPage.tsx apps/calc/src/pages/RegisterPage.tsx apps/calc/src/pages/LoginPage.test.tsx apps/calc/src/pages/RegisterPage.test.tsx apps/calc/src/test/setup.ts
 git commit -m "feat(calc): add routed authentication pages"
 ```
 
