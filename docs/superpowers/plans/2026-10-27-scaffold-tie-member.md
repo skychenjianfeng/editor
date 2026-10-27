@@ -635,7 +635,7 @@ git commit -m "docs: record tie member implementation coverage"
 - Consumes: Tasks 1-5.
 - Produces: 后端、前端、DOCX 和真实 HTTP 验收证据。
 
-- [ ] **Step 1: 运行后端全量测试**
+- [x] **Step 1: 运行后端全量测试**
 
 ```powershell
 cd services/calc-api
@@ -644,7 +644,7 @@ python -m pytest -q
 
 Expected: all tests PASS, no failures.
 
-- [ ] **Step 2: 运行迁移与 Django 检查**
+- [x] **Step 2: 运行迁移与 Django 检查**
 
 ```powershell
 python manage.py migrate
@@ -654,7 +654,7 @@ python manage.py check
 
 Expected: no pending migrations; `check` reports no issues.
 
-- [ ] **Step 3: 重新生成 10 份脚手架 DOCX**
+- [x] **Step 3: 重新生成 10 份脚手架 DOCX**
 
 ```powershell
 python -m calc_core.scaffold_suite --output-dir ..\..\oracle\platform-suite-20261027 --qa-path ..\..\docs\qa\2026-10-27-scaffold-suite.md
@@ -662,7 +662,7 @@ python -m calc_core.scaffold_suite --output-dir ..\..\oracle\platform-suite-2026
 
 Expected: `generated=10`; manifest 模块数 10；连墙件报告包含 2 张图，结果表行数等于结果数加 1。
 
-- [ ] **Step 4: 运行前端测试与构建**
+- [x] **Step 4: 运行前端测试与构建**
 
 ```powershell
 cd ..\..\apps\calc
@@ -672,7 +672,7 @@ bun run build
 
 Expected: all frontend tests PASS and production build exits 0.
 
-- [ ] **Step 5: 真实 HTTP 验证**
+- [x] **Step 5: 真实 HTTP 验证**
 
 若 `127.0.0.1:8001` 服务未运行，使用 `Start-Process ... -WindowStyle Hidden` 启动 `manage.py runserver 127.0.0.1:8001 --noreload`，然后验证：
 
@@ -698,7 +698,7 @@ $doc=Invoke-WebRequest -Method Post -Uri "$base/report.docx" -ContentType 'appli
 
 Expected: `module=True`、`spec=scaffold-tie-member`、`run=scaffold-tie-member`、`view=plan`，PNG/DXF/DOCX 均为 HTTP 200；额外断言 PNG 以 `89 50 4E 47`、DXF 以 `0D 0A` 或 `0A` 分隔的 `0/SECTION`、DOCX 以 `50 4B` 开头。
 
-- [ ] **Step 6: 最终检查**
+- [x] **Step 6: 最终检查**
 
 ```powershell
 git diff --check -- services/calc-api apps/calc docs/qa docs/superpowers oracle/pinming-cli-probe
@@ -707,7 +707,7 @@ git status --short
 
 Expected: no whitespace errors; only intended tie-member changes are staged or committed. Pre-existing unrelated worktree changes remain untouched.
 
-- [ ] **Step 7: 汇总验收**
+- [x] **Step 7: 汇总验收**
 
 报告必须给出：
 

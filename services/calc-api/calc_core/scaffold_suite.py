@@ -226,7 +226,7 @@ def generate_scaffold_suite(
                 f"{module_key} result table has {table_rows} rows for "
                 f"{len(results)} results"
             )
-        if module_key != "scaffold-tie-member" and not doc.inline_shapes:
+        if not doc.inline_shapes:
             raise RuntimeError(f"{module_key} report contains no inline figures")
 
         filename = (

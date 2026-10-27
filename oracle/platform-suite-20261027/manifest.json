@@ -1,0 +1,385 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-27T19:42:16+08:00",
+  "scope": "PmStudio 自算回归，不是品茗 oracle；本套件未启动、未操控品茗软件，不得据此声称完成品茗对照或授权操作。",
+  "artifact_kind": "pmsstudio-self-calculation-regression",
+  "module_count": 10,
+  "result_count": 114,
+  "failed_count": 4,
+  "control_failed_count": 4,
+  "modules": [
+    {
+      "sequence": 1,
+      "key": "scaffold-fastener",
+      "title": "扣件式脚手架",
+      "standard": "JGJ 130-2011",
+      "verified": false,
+      "category": "落地与满堂",
+      "summary": {
+        "total": 29,
+        "failed": 2,
+        "control_failed": 2
+      },
+      "通过项": [
+        "立杆长细比 λ",
+        "连墙件强度",
+        "连墙件稳定承载力",
+        "纵向水平杆抗弯",
+        "横向水平杆抗弯",
+        "扣件抗滑承载力",
+        "立杆地基承载力",
+        "脚手架搭设高度",
+        "步距/纵距构造限值",
+        "纵向水平杆挠度",
+        "横向水平杆挠度",
+        "剪刀撑宽度构造",
+        "连墙件覆盖面积",
+        "连墙件连接强度",
+        "连墙件偏离主节点",
+        "连墙件首步设置",
+        "纵横向扫地杆",
+        "剪刀撑与地面倾角",
+        "防护栏杆上杆高度",
+        "挡脚板高度",
+        "密目式安全立网",
+        "剪刀撑宽度上限",
+        "剪刀撑布置间距/连续性",
+        "连墙点以上悬臂高度",
+        "连墙件间距（步/跨）",
+        "脚手板抗弯",
+        "脚手板挠度"
+      ],
+      "失败项": [
+        {
+          "no": 1,
+          "key": "upright_stability",
+          "item": "立杆稳定性（组合风荷载）",
+          "value": 306.83,
+          "limit": 205.0,
+          "unit": "N/mm²",
+          "control": true,
+          "clause": "CECS 699-2020 5.2.6"
+        },
+        {
+          "no": 13,
+          "key": "tie_coupler_slip",
+          "item": "连墙件扣件抗滑",
+          "value": 11.18,
+          "limit": 8.0,
+          "unit": "kN",
+          "control": true,
+          "clause": "JGJ 130-2011 5.2.15"
+        }
+      ],
+      "结果数": 29,
+      "报告文件": "01_scaffold-fastener_扣件式脚手架.docx",
+      "DOCX大小": 344864,
+      "SHA256": "6f924a210556d22aa3c4fc33d40bf0bd34e33f05c469dfef5b07c54061b8d11e",
+      "内嵌图片数": 5,
+      "结果表行数": 30
+    },
+    {
+      "sequence": 2,
+      "key": "scaffold-fastener-pinming",
+      "title": "扣件式脚手架（品茗双立杆）",
+      "standard": "JGJ 130-2011",
+      "verified": false,
+      "category": "落地与满堂",
+      "summary": {
+        "total": 16,
+        "failed": 0,
+        "control_failed": 0
+      },
+      "通过项": [
+        "纵向水平杆抗弯",
+        "纵向水平杆挠度",
+        "横向水平杆抗弯",
+        "横向水平杆挠度",
+        "纵向水平杆与立杆扣件抗滑",
+        "横向水平杆与立杆扣件抗滑",
+        "立杆长细比",
+        "单立杆稳定（不组合风）",
+        "双立杆稳定（不组合风）",
+        "单立杆稳定（组合风）",
+        "双立杆稳定（组合风）",
+        "连墙件强度与稳定",
+        "连墙件对接焊缝",
+        "连墙件预埋件锚筋",
+        "连墙件与脚手架连接抗滑",
+        "立杆地基承载力"
+      ],
+      "失败项": [],
+      "结果数": 16,
+      "报告文件": "02_scaffold-fastener-pinming_扣件式脚手架（品茗双立杆）.docx",
+      "DOCX大小": 296997,
+      "SHA256": "92d0375955b0eccdd3af18b63245a19c95dbb12f85a92800d31692466687665f",
+      "内嵌图片数": 4,
+      "结果表行数": 17
+    },
+    {
+      "sequence": 3,
+      "key": "scaffold-tie-member",
+      "title": "连墙件计算",
+      "standard": "JGJ 130-2011",
+      "verified": false,
+      "category": "落地与满堂",
+      "summary": {
+        "total": 11,
+        "failed": 1,
+        "control_failed": 1
+      },
+      "通过项": [
+        "连墙件强度",
+        "连墙件稳定性",
+        "连墙件连接承载力",
+        "连墙件竖向间距",
+        "连墙件水平间距",
+        "连墙件覆盖面积",
+        "连墙件偏离主节点",
+        "连墙件首步设置",
+        "单排架体高度",
+        "软拉硬撑适用高度"
+      ],
+      "失败项": [
+        {
+          "no": 4,
+          "key": "tie_coupler_slip",
+          "item": "连墙件扣件抗滑",
+          "value": 8.87,
+          "limit": 8.0,
+          "unit": "kN",
+          "control": true,
+          "clause": "JGJ 130-2011 5.2.15"
+        }
+      ],
+      "结果数": 11,
+      "报告文件": "03_scaffold-tie-member_连墙件计算.docx",
+      "DOCX大小": 84905,
+      "SHA256": "9de8465390338e36b09d8cfafa9bf1929fd1a06bf7d246a4063f059170caa7ba",
+      "内嵌图片数": 2,
+      "结果表行数": 12
+    },
+    {
+      "sequence": 4,
+      "key": "cantilever-scaffold",
+      "title": "型钢悬挑脚手架",
+      "standard": "JGJ 130-2011",
+      "verified": false,
+      "category": "悬挑与升降",
+      "summary": {
+        "total": 6,
+        "failed": 0,
+        "control_failed": 0
+      },
+      "通过项": [
+        "悬挑梁抗弯",
+        "悬挑梁整体稳定",
+        "悬挑梁挠度",
+        "锚固钢筋（U形环）抗拉",
+        "悬挑梁抗剪",
+        "锚固抗倾覆"
+      ],
+      "失败项": [],
+      "结果数": 6,
+      "报告文件": "04_cantilever-scaffold_型钢悬挑脚手架.docx",
+      "DOCX大小": 99077,
+      "SHA256": "3eb904f3da8270f3a90b85d4ba3ab9dcdc56d2c78fa7a3167865285782b3c035",
+      "内嵌图片数": 1,
+      "结果表行数": 7
+    },
+    {
+      "sequence": 5,
+      "key": "full-hall-scaffold",
+      "title": "满堂脚手架",
+      "standard": "JGJ 130-2011",
+      "verified": false,
+      "category": "落地与满堂",
+      "summary": {
+        "total": 9,
+        "failed": 0,
+        "control_failed": 0
+      },
+      "通过项": [
+        "水平杆抗弯",
+        "水平杆挠度",
+        "立杆稳定",
+        "立杆长细比与步距构造",
+        "立杆地基承载力",
+        "水平杆连接扣件抗滑",
+        "剪刀撑布置与几何构造",
+        "高宽比连墙或等效张拉要求",
+        "爬梯与操作层脚手板构造"
+      ],
+      "失败项": [],
+      "结果数": 9,
+      "报告文件": "05_full-hall-scaffold_满堂脚手架.docx",
+      "DOCX大小": 171377,
+      "SHA256": "0e18f9577d65b16b8f4a2e0a245bc35a40fb7c7b556272759de09a075c5205ab",
+      "内嵌图片数": 2,
+      "结果表行数": 10
+    },
+    {
+      "sequence": 6,
+      "key": "suspended-basket",
+      "title": "高处作业吊篮",
+      "standard": "GB/T 19155-2017",
+      "verified": false,
+      "category": "工具式与平台",
+      "summary": {
+        "total": 8,
+        "failed": 0,
+        "control_failed": 0
+      },
+      "通过项": [
+        "吊篮平台主梁抗弯",
+        "吊篮平台主梁挠度",
+        "悬挂机构抗倾覆稳定系数",
+        "配重质量需求",
+        "工作钢丝绳安全系数",
+        "JGJ动力钢丝绳风载组合",
+        "建筑结构支承点承载力",
+        "防坠安全装置配置"
+      ],
+      "失败项": [],
+      "结果数": 8,
+      "报告文件": "06_suspended-basket_高处作业吊篮.docx",
+      "DOCX大小": 107015,
+      "SHA256": "d29fe9987e75b4cfb6051191e412843217adf74ac37ce9f71866a9216a2ec101",
+      "内嵌图片数": 1,
+      "结果表行数": 9
+    },
+    {
+      "sequence": 7,
+      "key": "door-scaffold",
+      "title": "门式钢管脚手架",
+      "standard": "JGJ 128-2010",
+      "verified": false,
+      "category": "落地与满堂",
+      "summary": {
+        "total": 9,
+        "failed": 0,
+        "control_failed": 0
+      },
+      "通过项": [
+        "门架立杆稳定",
+        "门架横梁抗弯",
+        "门架横梁挠度",
+        "连墙件承载力及构造",
+        "地基承载力",
+        "门架与配件装配构造",
+        "剪刀撑布置与搭接构造",
+        "水平加固杆构造",
+        "连墙件细部构造"
+      ],
+      "失败项": [],
+      "结果数": 9,
+      "报告文件": "07_door-scaffold_门式钢管脚手架.docx",
+      "DOCX大小": 156718,
+      "SHA256": "3f2b01cb101c14ad7f4d6d9485cdf7bbe0819612128af34848de3c86166df942",
+      "内嵌图片数": 2,
+      "结果表行数": 10
+    },
+    {
+      "sequence": 8,
+      "key": "attached-lifting-scaffold",
+      "title": "附着式升降脚手架",
+      "standard": "JGJ 202-2010",
+      "verified": false,
+      "category": "悬挑与升降",
+      "summary": {
+        "total": 9,
+        "failed": 0,
+        "control_failed": 0
+      },
+      "通过项": [
+        "架体风荷载/水平斜杆",
+        "竖向主框架受压承载力",
+        "附墙支座/穿墙螺栓承载力",
+        "防坠装置",
+        "升降同步与架体构造",
+        "升降动力设备额定承载力",
+        "升降/防坠悬臂梁抗弯",
+        "导轨专项验算利用率",
+        "外立面全高剪刀撑构造"
+      ],
+      "失败项": [],
+      "结果数": 9,
+      "报告文件": "08_attached-lifting-scaffold_附着式升降脚手架.docx",
+      "DOCX大小": 89683,
+      "SHA256": "03421d1c71084eb3d325581a71a0c015af4addeaecf5ef05875ce060bbf1ce39",
+      "内嵌图片数": 1,
+      "结果表行数": 10
+    },
+    {
+      "sequence": 9,
+      "key": "ground-operation-platform",
+      "title": "落地式操作平台",
+      "standard": "JGJ 80-2016",
+      "verified": false,
+      "category": "工具式与平台",
+      "summary": {
+        "total": 8,
+        "failed": 1,
+        "control_failed": 1
+      },
+      "通过项": [
+        "平台板抗弯",
+        "平台板挠度",
+        "水平杆或搁栅抗弯",
+        "立杆稳定",
+        "立杆基础地基承载力",
+        "水平杆连接扣件抗滑",
+        "防护栏杆、连墙件及稳定构造"
+      ],
+      "失败项": [
+        {
+          "no": 1,
+          "key": "geometry_construction",
+          "item": "面积、高度、高宽比及平台荷载构造控制",
+          "value": 2.0,
+          "limit": 1.0,
+          "unit": "—",
+          "control": true,
+          "clause": "JGJ 80-2016 6.1.2、6.3.1（正文第9页）"
+        }
+      ],
+      "结果数": 8,
+      "报告文件": "09_ground-operation-platform_落地式操作平台.docx",
+      "DOCX大小": 112777,
+      "SHA256": "8cedd546e7dcd921114e8db916f66b192d02819dca7cf6609ebeb7c2aa68fcf8",
+      "内嵌图片数": 1,
+      "结果表行数": 9
+    },
+    {
+      "sequence": 10,
+      "key": "cantilever-operation-platform",
+      "title": "悬挑式操作平台",
+      "standard": "JGJ 80-2016",
+      "verified": false,
+      "category": "工具式与平台",
+      "summary": {
+        "total": 9,
+        "failed": 0,
+        "control_failed": 0
+      },
+      "通过项": [
+        "主梁抗弯及悬挑长度构造",
+        "主梁挠度",
+        "钢丝绳/斜拉承载力",
+        "锚固或连接承载力",
+        "抗倾覆与支承构造",
+        "次梁抗弯",
+        "铺板抗弯",
+        "焊缝抗剪连接",
+        "防护栏杆及吊环构造"
+      ],
+      "失败项": [],
+      "结果数": 9,
+      "报告文件": "10_cantilever-operation-platform_悬挑式操作平台.docx",
+      "DOCX大小": 112753,
+      "SHA256": "122de7d176eedd06e47e71dbefea601cb0dc448abec045c2e52dc02c1ee2836e",
+      "内嵌图片数": 1,
+      "结果表行数": 10
+    }
+  ]
+}

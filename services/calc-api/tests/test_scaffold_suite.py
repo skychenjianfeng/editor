@@ -61,8 +61,7 @@ def test_suite_generates_ten_utf8_named_reports_manifest_and_qa(tmp_path):
 
         doc = Document(io.BytesIO(content))
         assert entry["内嵌图片数"] == len(doc.inline_shapes)
-        if entry["key"] != "scaffold-tie-member":
-            assert entry["内嵌图片数"] > 0
+        assert entry["内嵌图片数"] > 0
         result_table = next(
             table
             for table in doc.tables

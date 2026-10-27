@@ -26,7 +26,7 @@
 | 3 四视图 | `4 failed, 15 passed`：通用方框缺少“建筑墙面”专用内容 | `19 passed, 7 warnings in 1.11s` |
 | 4 报告图与标签 | `3 failed, 15 passed`：图题 key 缺失、0 张专用图、参数键未中文化 | `19 passed, 7 warnings in 8.36s` |
 
-Task 2 的套件测试在提交时尚未包含 Task 4 的专用图；为保持计划任务边界和提交顺序，通用“必须有图”断言暂不对新模块生效。Task 4 已用专用测试强制连墙件恰好生成“正立面 + 平面”两张 PNG，Task 6 再以实际 DOCX 内嵌图片数验收。
+Task 2 的套件测试在提交时尚未包含 Task 4 的专用图，因此该阶段曾临时限定通用“必须有图”断言；Task 4 完成后已恢复为对所有 10 个模块强制要求内嵌图。Task 4 另有专用测试强制连墙件恰好生成“正立面 + 平面”两张 PNG。
 
 ## 出图与计算书
 
@@ -46,4 +46,14 @@ Task 2 的套件测试在提交时尚未包含 Task 4 的专用图；为保持�
 
 ## 最终验收
 
-后端全量、Django 检查、10 份 DOCX、前端测试/构建和真实 HTTP 验收在 Task 6 执行后补记实际数字与边界。
+- 后端全量：`263 passed, 7 warnings in 13.31s`。
+- Django：`migrate` 无待应用迁移；`makemigrations --check` 返回 `No changes detected`；`check` 返回 `System check identified no issues (0 silenced).`。
+- DOCX 套件：`generated=10 results=114 failed=4`；目录清理后恰好 10 份 DOCX。
+- 连墙件 DOCX：11 条结果、12 行结果表（含表头）、2 张内嵌图片；默认参数有 1 个控制项失败（扣件抗滑 `8.87 kN > 8.0 kN`）。
+- 前端：6 个测试文件、10 个测试全部通过；`tsc --noEmit && vite build` 成功，2381 个模块完成转换。
+- HTTP：`catalog/modules`、`param-spec`、`runs`、`geometry`、`export.png`、`export.dxf`、`report.docx` 均返回 200。
+- 文件签名：PNG `89 50 4E 47`；DXF 前 200 字节含 `SECTION`；DOCX `50 4B`。
+
+## 仍未取得的 oracle
+
+尚未取得同参数品茗“连墙件计算”RTF，因此没有逐项 oracle 对算、没有建立容差结论，也没有把模块加入 verified 列表。PmStudio 自算、自动测试通过、DOCX/HTTP 成功都不能替代品茗 oracle 或正式工程审查。
