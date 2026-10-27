@@ -39,6 +39,7 @@ async function waitForBrand(location) {
 }
 
 let qaProjectId
+let devLoginSuccessMessage
 
 try {
   const loginResponse = await page.goto(appUrl('/login'), {
@@ -92,9 +93,8 @@ try {
     }
     await waitForBrand(expectedCalcPath)
 
-    console.log(
-      'smoke ok: dev-login=prefilled login=workspace brand=workspace+calc qa-project=created+deleted',
-    )
+    devLoginSuccessMessage =
+      'smoke ok: dev-login=prefilled login=workspace brand=workspace+calc qa-project=created+deleted'
   } else {
     const workspaceResponse = await page.goto(appUrl('/workspace'), {
       waitUntil: 'domcontentloaded',
@@ -130,6 +130,7 @@ try {
       if (deleteResponse.status() !== 204) {
         throw new Error(`DELETE /api/v1/projects returned ${deleteResponse.status()}`)
       }
+      if (devLoginSuccessMessage) console.log(devLoginSuccessMessage)
     }
   } finally {
     await browser.close()

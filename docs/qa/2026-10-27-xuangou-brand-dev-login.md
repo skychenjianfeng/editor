@@ -2,7 +2,7 @@
 
 日期：2026-10-27
 
-范围：Task 1–2 的品牌替换与开发环境登录预填，基于提交 `aefed981`、`94372f4`。本记录不包含账号、密码、Cookie 或 Token。
+范围：Task 1–3 的品牌替换、开发环境登录预填与浏览器验收。运行时验证基于实现提交 `f12d456`；该提交之后仅补充验收测试、smoke 日志时序和本文档，不修改生产登录实现。本记录不包含账号、密码、Cookie 或 Token。
 
 ## 结论
 
@@ -20,8 +20,10 @@
 - 登录页仅在 Vite 开发模式、且邮箱和密码两项本地配置都非空时预填。
 - 生产分支使用空默认值，不读取本地演示配置。
 - 本地演示账号仅存在于 Git 忽略的 `apps/calc/.env.local` 和当前默认本地 SQLite 中。
+- 默认 SQLite 权限复核结果：`is_staff=false`、`is_superuser=false`；查询过程未输出用户标识或凭据。
 - `CALC_EXPECT_DEV_LOGIN=1` 是 smoke 的显式验收开关；未设置时保持匿名 smoke 行为。
 - 开启后，smoke 先确认预填非空，再点击登录，等待 `/workspace` 并断言品牌；随后通过真实计算 API 创建唯一 QA 项目，进入其计算页并在认证查询结束后断言 pathname 精确等于 `/projects/<项目 ID>/calc`，再断言该页品牌，并在 `finally` 中删除该项目。
+- 开发登录成功日志只在 QA 项目 `DELETE` 返回 204 后输出；删除失败时不会打印 `qa-project=created+deleted`。
 - smoke 不打印预填值、密码、Cookie 或 Token。
 
 ## 全量验证
@@ -34,12 +36,9 @@ npm --prefix apps/calc run build
 
 | 检查 | 结果 |
 |---|---|
-| `npm --prefix apps/calc test` | 通过；16 个测试文件、41 项测试 |
+| `npm --prefix apps/calc test` | 通过；16 个测试文件、44 项测试 |
 | `npm --prefix apps/calc run check-types` | 通过 |
 | `npm --prefix apps/calc run build` | 通过；2745 个模块完成转换 |
-| `python -m pytest -q` | 通过；296 项测试 |
-| `python manage.py check` | 通过；0 个问题 |
-| `python manage.py makemigrations --check` | 通过；`No changes detected` |
 
 生产构建仅有单个 JS chunk 超过 500 kB 的非阻断性 Vite 提示，不影响本任务功能或凭据剥离结论。
 
@@ -53,7 +52,11 @@ Remove-Item Env:CALC_EXPECT_DEV_LOGIN -ErrorAction SilentlyContinue
 npm --prefix apps/calc run test:e2e
 ```
 
-结果：通过，保持登录页返回 200、匿名访问工作台回退到登录页，以及匿名认证接口返回 401。
+最终 head 结果：通过，保持登录页返回 200、匿名访问工作台回退到登录页，以及匿名认证接口返回 401。日志：
+
+```text
+smoke ok: login=200 root=present workspace-fallback=200 redirect=/login?next=/workspace anonymous-me=401
+```
 
 开发登录与品牌复跑：
 
@@ -63,14 +66,26 @@ $env:CALC_EXPECT_DEV_LOGIN='1'
 npm --prefix apps/calc run test:e2e
 ```
 
-结果：通过。smoke 使用真实系统 Chrome（`channel: 'chrome'`, `headless: true`）完成：
+最终 head 结果：通过。smoke 使用真实系统 Chrome（`channel: 'chrome'`, `headless: true`）完成：
 
 - 预填邮箱和密码均非空，但未读取或记录其值。
 - 点击“登录”后 URL 进入 `/workspace`。
 - 项目工作台可见“玄构天枢”。
 - 通过 `POST /api/v1/projects` 创建唯一 QA 项目；认证查询结束后，URL pathname 必须精确等于 `/projects/<项目 ID>/calc`。若 AuthGate 将未授权访问重定向到登录页，smoke 会报告实际 pathname 与期望 pathname 并失败。
 - 项目计算页可见“玄构天枢”。
-- `finally` 通过 `DELETE /api/v1/projects/<项目 ID>` 删除 QA 项目，退出后不残留临时数据。
+- `finally` 通过 `DELETE /api/v1/projects/<项目 ID>` 删除 QA 项目；仅在删除返回 204 后输出成功日志，退出后不残留临时数据。
+
+日志：
+
+```text
+smoke ok: dev-login=prefilled login=workspace brand=workspace+calc qa-project=created+deleted
+```
+
+## 新增回归测试
+
+- `dev-login.test.ts`：覆盖邮箱缺失和空白邮箱时保持空表单。
+- `LoginPage.test.tsx`：覆盖 `DEV=false` 时即使开发邮箱、密码环境变量有值，表单仍保持为空。
+- 新增测试直接通过，说明其锁定的是现有正确行为；未修改生产登录实现。
 
 本地截图证据位于 Task 3 工作目录的 `.superpowers/sdd/2026-10-27-xuangou-brand-dev-login/`，按任务提交范围不纳入 Git：
 
@@ -95,4 +110,4 @@ npm --prefix apps/calc run test:e2e
 
 - 仓库文档、测试日志、截图记录和报告均不包含邮箱、密码、Cookie、Token 或环境文件内容。
 - 本地演示配置继续保存在 Git 忽略的 `apps/calc/.env.local`，不随提交或生产构建分发。
-- 本次提交只包含本 QA 文档，不包含应用源码、构建产物、本地配置或截图。
+- 本轮收口提交只包含 smoke、两份回归测试和本 QA 文档，不包含生产登录实现、构建产物、本地配置或截图。

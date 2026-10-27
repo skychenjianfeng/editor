@@ -40,6 +40,16 @@ describe('LoginPage', () => {
     expect(screen.getByLabelText('密码')).toHaveValue('local-password')
   })
 
+  it('keeps the form empty outside development even when credentials are configured', () => {
+    vi.stubEnv('DEV', false)
+    vi.stubEnv('VITE_DEV_LOGIN_EMAIL', 'demo@example.test')
+    vi.stubEnv('VITE_DEV_LOGIN_PASSWORD', 'local-password')
+    renderLogin()
+
+    expect(screen.getByLabelText('邮箱')).toHaveValue('')
+    expect(screen.getByLabelText('密码')).toHaveValue('')
+  })
+
   it('logs in with CSRF and follows a safe next route', async () => {
     document.cookie = 'csrftoken=login-token; Path=/'
     const fetchMock = vi.fn(async (input: RequestInfo | URL, _init?: RequestInit) => {

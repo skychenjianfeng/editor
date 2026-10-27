@@ -27,4 +27,20 @@ describe('resolveLoginDefaults', () => {
       EMPTY_LOGIN_VALUES,
     )
   })
+
+  it('keeps the form empty when email is missing', () => {
+    expect(resolveLoginDefaults({ dev: true, password: 'local-password' })).toEqual(
+      EMPTY_LOGIN_VALUES,
+    )
+  })
+
+  it('keeps the form empty when email is blank', () => {
+    expect(
+      resolveLoginDefaults({
+        dev: true,
+        email: '   ',
+        password: 'local-password',
+      }),
+    ).toEqual(EMPTY_LOGIN_VALUES)
+  })
 })
