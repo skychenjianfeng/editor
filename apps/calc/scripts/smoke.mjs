@@ -78,12 +78,19 @@ try {
     qaProjectId = project.project_id
 
     const calcResponse = await page.goto(appUrl(`/projects/${qaProjectId}/calc`), {
-      waitUntil: 'domcontentloaded',
+      waitUntil: 'networkidle',
     })
     if (calcResponse?.status() !== 200) {
       throw new Error(`GET project calc returned ${calcResponse?.status() ?? 'no response'}`)
     }
-    await waitForBrand('/projects/:projectId/calc')
+    const expectedCalcPath = `/projects/${qaProjectId}/calc`
+    const actualCalcPath = new URL(page.url()).pathname
+    if (actualCalcPath !== expectedCalcPath) {
+      throw new Error(
+        `project calc navigation ended at ${actualCalcPath}, expected ${expectedCalcPath}`,
+      )
+    }
+    await waitForBrand(expectedCalcPath)
 
     console.log(
       'smoke ok: dev-login=prefilled login=workspace brand=workspace+calc qa-project=created+deleted',

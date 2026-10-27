@@ -21,7 +21,7 @@
 - 生产分支使用空默认值，不读取本地演示配置。
 - 本地演示账号仅存在于 Git 忽略的 `apps/calc/.env.local` 和当前默认本地 SQLite 中。
 - `CALC_EXPECT_DEV_LOGIN=1` 是 smoke 的显式验收开关；未设置时保持匿名 smoke 行为。
-- 开启后，smoke 先确认预填非空，再点击登录，等待 `/workspace` 并断言品牌；随后通过真实计算 API 创建唯一 QA 项目，进入其计算页断言品牌，并在 `finally` 中删除该项目。
+- 开启后，smoke 先确认预填非空，再点击登录，等待 `/workspace` 并断言品牌；随后通过真实计算 API 创建唯一 QA 项目，进入其计算页并在认证查询结束后断言 pathname 精确等于 `/projects/<项目 ID>/calc`，再断言该页品牌，并在 `finally` 中删除该项目。
 - smoke 不打印预填值、密码、Cookie 或 Token。
 
 ## 全量验证
@@ -68,7 +68,7 @@ npm --prefix apps/calc run test:e2e
 - 预填邮箱和密码均非空，但未读取或记录其值。
 - 点击“登录”后 URL 进入 `/workspace`。
 - 项目工作台可见“玄构天枢”。
-- 通过 `POST /api/v1/projects` 创建唯一 QA 项目，URL 进入 `/projects/<项目 ID>/calc`。
+- 通过 `POST /api/v1/projects` 创建唯一 QA 项目；认证查询结束后，URL pathname 必须精确等于 `/projects/<项目 ID>/calc`。若 AuthGate 将未授权访问重定向到登录页，smoke 会报告实际 pathname 与期望 pathname 并失败。
 - 项目计算页可见“玄构天枢”。
 - `finally` 通过 `DELETE /api/v1/projects/<项目 ID>` 删除 QA 项目，退出后不残留临时数据。
 
