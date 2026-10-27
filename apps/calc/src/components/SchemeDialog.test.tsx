@@ -40,17 +40,11 @@ afterEach(() => {
 })
 
 describe('SchemeDialog', () => {
-  it('opens a saved scheme and saves the current params into the selected project', async () => {
+  it('only lists and saves schemes for the current project', async () => {
     const onOpenScheme = vi.fn()
     const onSaved = vi.fn()
     const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input)
-      if (url.includes('/projects?') && (!init?.method || init.method === 'GET')) {
-        return new Response(JSON.stringify({ projects: [project] }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
-      }
       if (url.endsWith(`/projects/${project.project_id}/schemes`)) {
         if (init?.method === 'POST') {
           const body = JSON.parse(String(init.body))
@@ -85,6 +79,7 @@ describe('SchemeDialog', () => {
       <QueryClientProvider client={client}>
         <SchemeDialog
           open
+          project={project}
           module="scaffold-fastener"
           moduleTitle="扣件式脚手架"
           params={{ h: 1.8, la: 1.5, lb: 0.9 }}
@@ -96,10 +91,11 @@ describe('SchemeDialog', () => {
       </QueryClientProvider>,
     )
 
-    expect(await screen.findByText('示例项目')).toBeInTheDocument()
     expect(await screen.findByText('北立面')).toBeInTheDocument()
+    expect(screen.queryByLabelText('搜索项目')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('新建项目')).not.toBeInTheDocument()
     fireEvent.click(screen.getByText('打开'))
-    expect(onOpenScheme).toHaveBeenCalledWith(project, scheme)
+    expect(onOpenScheme).toHaveBeenCalledWith(scheme)
 
     fireEvent.change(screen.getByLabelText('方案名称'), { target: { value: '南立面修订' } })
     fireEvent.click(screen.getByText('保存方案'))
@@ -120,5 +116,6 @@ describe('SchemeDialog', () => {
       })
     })
     await waitFor(() => expect(onSaved).toHaveBeenCalled())
+    expect(fetchMock.mock.calls.some(([input]) => String(input).includes('/projects?'))).toBe(false)
   })
 })

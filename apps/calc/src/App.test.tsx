@@ -1,71 +1,101 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vitest'
+import { cleanup, render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
+import type { ProjectRecord } from './api/projects'
 
-let activeClient: QueryClient | null = null
+const project: ProjectRecord = {
+  project_id: '11111111-1111-4111-8111-111111111111',
+  name: '滨江研发楼改造',
+  code: 'PM-018',
+  client: '',
+  location: '上海',
+  region: '上海',
+  status: 'calculating',
+  status_label: '计算中',
+  scheme_count: 2,
+  failed_control_count: 0,
+  last_calculated_at: null,
+  designer: '',
+  note: '',
+  created_at: '2026-10-26T00:00:00Z',
+  updated_at: '2026-10-27T00:00:00Z',
+}
+
+const setupFetch = globalThis.fetch
 
 afterEach(() => {
   cleanup()
-  activeClient?.clear()
-  activeClient = null
+  vi.unstubAllGlobals()
 })
 
-function renderApp() {
+function renderApp(path: string, authenticated: boolean) {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input)
+      if (url.endsWith('/auth/me')) {
+        return authenticated
+          ? new Response(
+              JSON.stringify({
+                user_id: 1,
+                email: 'engineer@example.com',
+                display_name: '张工',
+              }),
+              { status: 200, headers: { 'Content-Type': 'application/json' } },
+            )
+          : new Response(JSON.stringify({ detail: '未登录' }), {
+              status: 401,
+              headers: { 'Content-Type': 'application/json' },
+            })
+      }
+      if (url.endsWith(`/projects/${project.project_id}`)) {
+        return new Response(JSON.stringify(project), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      if (url.includes('/projects?')) {
+        return new Response(JSON.stringify({ projects: [] }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      return setupFetch(input, init)
+    }),
+  )
+
   const client = new QueryClient({
     defaultOptions: {
       queries: { retry: false, gcTime: 0 },
       mutations: { retry: false, gcTime: 0 },
     },
   })
-  activeClient = client
   return render(
     <QueryClientProvider client={client}>
-      <App />
+      <MemoryRouter initialEntries={[path]}>
+        <App />
+      </MemoryRouter>
     </QueryClientProvider>,
   )
 }
 
-describe('S2 计算工作台', () => {
-  it('渲染模块树、参数与结果三联', async () => {
-    renderApp()
-    expect(screen.getByText('安全计算工作台')).toBeInTheDocument()
-    expect(screen.getByText('扣件式脚手架')).toBeInTheDocument()
-    expect(await screen.findByText('扣件式脚手架（品茗双立杆）')).toBeInTheDocument()
-    expect(screen.getByText('立杆纵距 la')).toBeInTheDocument()
-    expect(screen.getByText('连墙件强度')).toBeInTheDocument()
+describe('App routes', () => {
+  it('redirects anonymous users from protected pages to login', async () => {
+    renderApp('/workspace', false)
+    expect(await screen.findByRole('button', { name: '登录' })).toBeInTheDocument()
+    expect(screen.getByText('欢迎回来')).toBeInTheDocument()
   })
 
-  it('仅不满足筛选出 2 行', () => {
-    renderApp()
-    fireEvent.click(screen.getByText('仅不满足'))
-    const rows = screen.getAllByText(/不满足|连墙件强度|连墙件稳定承载力/)
-    expect(rows.length).toBeGreaterThanOrEqual(2)
-    expect(screen.queryByText('立杆长细比 λ')).not.toBeInTheDocument()
+  it('redirects authenticated root requests to the project workspace', async () => {
+    renderApp('/', true)
+    expect(await screen.findByRole('heading', { name: '项目工作台' })).toBeInTheDocument()
   })
 
-  it('切换平面视图会向后端请求 plan 几何', async () => {
-    const fetchMock = globalThis.fetch as unknown as { mock: { calls: unknown[][] } }
-    renderApp()
-    fireEvent.click(screen.getByText('平面'))
-    await waitFor(() => {
-      const bodies = fetchMock.mock.calls.map((c) =>
-        String((c[1] as RequestInit | undefined)?.body ?? ''),
-      )
-      expect(bodies.some((b) => b.includes('"view":"plan"'))).toBe(true)
-    })
-  })
-
-  it('修改步距后重新请求几何', async () => {
-    const { container } = renderApp()
-    const fetchMock = globalThis.fetch as unknown as { mock: { calls: unknown[][] } }
-    const inputs = container.querySelectorAll('input[type="number"]')
-    fireEvent.change(inputs[0], { target: { value: '2' } })
-    await waitFor(() => {
-      const bodies = fetchMock.mock.calls.map((c) =>
-        String((c[1] as RequestInit | undefined)?.body ?? ''),
-      )
-      expect(bodies.some((b) => b.includes('"h":2'))).toBe(true)
-    })
+  it('renders the calculator only for a project route', async () => {
+    renderApp(`/projects/${project.project_id}/calc`, true)
+    expect(await screen.findByText('滨江研发楼改造')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: '返回项目工作台' })).toBeInTheDocument()
   })
 })

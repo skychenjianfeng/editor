@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
+import { apiFetchRaw, apiRequest } from './client'
 import type { ProjectRecord } from './projects'
 
-const BASE = import.meta.env.VITE_CALC_API ?? 'http://127.0.0.1:8001/api/v1'
+const BASE = ''
 
 export type ApiResultItem = {
   no: number
@@ -105,9 +106,7 @@ export type GeometryPayload = {
 }
 
 async function getJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, init)
-  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`)
-  return (await res.json()) as T
+  return apiRequest<T>(url, init)
 }
 
 export function useParamSpec(module = 'scaffold-fastener') {
@@ -192,8 +191,7 @@ export async function updateProject(
 }
 
 export async function deleteProject(projectId: string) {
-  const response = await fetch(`${BASE}/projects/${projectId}`, { method: 'DELETE' })
-  if (!response.ok) throw new Error(`${response.status} ${await response.text()}`)
+  await apiRequest<void>(`${BASE}/projects/${projectId}`, { method: 'DELETE' })
 }
 
 export async function fetchSchemes(projectId: string) {
@@ -230,8 +228,7 @@ export async function updateScheme(
 }
 
 export async function deleteScheme(schemeId: string) {
-  const response = await fetch(`${BASE}/schemes/${schemeId}`, { method: 'DELETE' })
-  if (!response.ok) throw new Error(`${response.status} ${await response.text()}`)
+  await apiRequest<void>(`${BASE}/schemes/${schemeId}`, { method: 'DELETE' })
 }
 
 export function useGeometry(
@@ -256,7 +253,7 @@ export async function downloadReport(
   module = 'scaffold-fastener',
   moduleTitle?: string,
 ) {
-  const res = await fetch(`${BASE}/report.docx`, {
+  const res = await apiFetchRaw(`${BASE}/report.docx`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ module, params }),
@@ -280,7 +277,7 @@ export async function downloadDrawing(
   module = 'scaffold-fastener',
   moduleTitle?: string,
 ) {
-  const res = await fetch(`${BASE}/export.${kind}`, {
+  const res = await apiFetchRaw(`${BASE}/export.${kind}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ module, params, view }),
@@ -343,7 +340,7 @@ export async function downloadBatchCsv(
   cases: Record<string, unknown>[],
   module = 'scaffold-fastener',
 ) {
-  const res = await fetch(`${BASE}/export.batch.csv`, {
+  const res = await apiFetchRaw(`${BASE}/export.batch.csv`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ module, cases }),
@@ -365,7 +362,7 @@ export async function downloadResultsCsv(
   module = 'scaffold-fastener',
   moduleTitle?: string,
 ) {
-  const res = await fetch(`${BASE}/export.results.csv`, {
+  const res = await apiFetchRaw(`${BASE}/export.results.csv`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ module, params }),

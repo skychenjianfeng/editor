@@ -10,7 +10,6 @@ describe('TopBar', () => {
       <TopBar
         dirty={false}
         moduleTitle="高处作业吊篮"
-        projectName="示例项目"
         schemeName="北立面吊篮"
         total={24}
         onRun={vi.fn()}
@@ -20,7 +19,6 @@ describe('TopBar', () => {
     )
 
     expect(screen.getByText('高处作业吊篮')).toBeInTheDocument()
-    expect(screen.getByText('示例项目')).toBeInTheDocument()
     expect(screen.getByText('北立面吊篮')).toBeInTheDocument()
     expect(screen.getByText('已计算 · 24 项')).toBeInTheDocument()
     expect(screen.getByText('本地 API')).toBeInTheDocument()

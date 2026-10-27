@@ -3,7 +3,6 @@ import { ChevronRight, Download, FolderKanban, History, Play, Table2, Zap } from
 export function TopBar({
   dirty,
   moduleTitle,
-  projectName,
   schemeName,
   total,
   onRun,
@@ -14,7 +13,6 @@ export function TopBar({
 }: {
   dirty: boolean
   moduleTitle?: string
-  projectName?: string
   schemeName?: string
   total?: number
   onRun: () => void
@@ -35,10 +33,6 @@ export function TopBar({
       <div className="h-4 w-px bg-[color:var(--color-line)]" />
 
       <nav className="flex items-center gap-1 text-[12px] text-[color:var(--color-ink-2)]">
-        <span className="max-w-[180px] truncate rounded px-1.5 py-0.5 hover:bg-black/5">
-          {projectName ?? '未选择项目'}
-        </span>
-        <ChevronRight className="h-3 w-3 text-[color:var(--color-ink-3)]" />
         <span className="max-w-[180px] truncate rounded px-1.5 py-0.5 hover:bg-black/5">
           {schemeName ?? '未保存方案'}
         </span>
