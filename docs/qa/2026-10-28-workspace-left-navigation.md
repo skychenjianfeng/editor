@@ -39,8 +39,11 @@
 - 390x844：显示“打开工作台目录”按钮；点击后出现名称为“工作台目录”的 dialog。
 - 移动按钮使用 `aria-expanded` 反映抽屉状态，`aria-controls` 指向抽屉内容稳定
   `id`；关闭后恢复为 `false`。
-- 全部 Dialog 的 overlay 与 content 在 `prefers-reduced-motion: reduce` 下通过
-  `motion-reduce:animate-none` 禁用 CSS 进出场动画。
+- 全部 Dialog 的 overlay 与 content 使用 Tailwind v4 important 类
+  `motion-reduce:animate-none!`；生产构建在
+  `@media (prefers-reduced-motion:reduce)` 中输出
+  `.motion-reduce\:animate-none\!{animation:none!important}`，明确覆盖
+  `data-open` / `data-closed` 状态动画。
 - 移动抽屉左边缘与视口对齐，宽度不超过 `86vw`。
 - 移动抽屉验证三条独立关闭路径：点击 dialog 内可访问名称为 `Close` 的关闭控件；
   按 `Escape`；以及在抽屉内导航到“系统设置”。每条路径均断言 dialog detached，
