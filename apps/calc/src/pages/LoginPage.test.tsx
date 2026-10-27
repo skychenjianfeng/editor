@@ -7,6 +7,7 @@ import { LoginPage } from './LoginPage'
 afterEach(() => {
   cleanup()
   vi.unstubAllGlobals()
+  vi.unstubAllEnvs()
   document.cookie = 'csrftoken=; Max-Age=0; Path=/'
 })
 
@@ -29,6 +30,16 @@ function renderLogin(next = '/workspace') {
 }
 
 describe('LoginPage', () => {
+  it('prefills configured development credentials', () => {
+    vi.stubEnv('DEV', true)
+    vi.stubEnv('VITE_DEV_LOGIN_EMAIL', 'demo@example.test')
+    vi.stubEnv('VITE_DEV_LOGIN_PASSWORD', 'local-password')
+    renderLogin()
+
+    expect(screen.getByLabelText('邮箱')).toHaveValue('demo@example.test')
+    expect(screen.getByLabelText('密码')).toHaveValue('local-password')
+  })
+
   it('logs in with CSRF and follows a safe next route', async () => {
     document.cookie = 'csrftoken=login-token; Path=/'
     const fetchMock = vi.fn(async (input: RequestInfo | URL, _init?: RequestInit) => {

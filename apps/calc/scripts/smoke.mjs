@@ -22,6 +22,14 @@ try {
   }
   await page.locator('#root').waitFor({ state: 'attached', timeout: 15_000 })
 
+  if (process.env.CALC_EXPECT_DEV_LOGIN === '1') {
+    const emailValue = await page.getByLabel('邮箱').inputValue()
+    const passwordValue = await page.getByLabel('密码').inputValue()
+    if (!emailValue || !passwordValue) {
+      throw new Error('local login defaults were not applied')
+    }
+  }
+
   const workspaceResponse = await page.goto(appUrl('/workspace'), {
     waitUntil: 'domcontentloaded',
   })

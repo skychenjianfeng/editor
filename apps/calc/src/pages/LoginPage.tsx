@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { type LoginValues, useLogin } from '../api/auth'
 import { ApiError } from '../api/client'
 import { safeNextPath } from '../auth/AuthGate'
+import { EMPTY_LOGIN_VALUES, resolveLoginDefaults } from '../auth/dev-login'
 import { Alert, AlertDescription } from '../components/ui/alert'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
@@ -23,7 +24,13 @@ export function LoginPage() {
   const login = useLogin()
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: import.meta.env.DEV
+      ? resolveLoginDefaults({
+          dev: true,
+          email: import.meta.env.VITE_DEV_LOGIN_EMAIL,
+          password: import.meta.env.VITE_DEV_LOGIN_PASSWORD,
+        })
+      : EMPTY_LOGIN_VALUES,
   })
 
   async function submit(values: LoginValues) {
