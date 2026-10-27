@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
+  AlertCircle,
   ArrowRight,
   Calculator,
   CheckCircle2,
@@ -22,7 +23,9 @@ import {
 } from '../../api/projects'
 import { type ProjectCreateIntent, ProjectFormDialog } from '../ProjectFormDialog'
 import { ProjectTable } from '../ProjectTable'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { Button } from '../ui/button'
+import { Skeleton } from '../ui/skeleton'
 
 const metricCards = [
   { key: 'all', label: '全部项目', icon: FolderPlus, tone: 'text-[#52525b] bg-[#f4f4f5]' },
@@ -58,24 +61,52 @@ export function ProjectWorkspacePanel({ variant }: { variant: 'overview' | 'mana
     },
   })
 
-  const metricsSource = useMemo(
-    () => allProjects.data?.projects ?? projects.data?.projects ?? [],
-    [allProjects.data, projects.data],
-  )
+  const filteredProjects = projects.data?.projects
+  const globalProjects = allProjects.data?.projects
   const metrics = useMemo(
-    () => ({
-      all: metricsSource.length,
-      calculating: metricsSource.filter((project) => project.status === 'calculating').length,
-      schemes: metricsSource.reduce((total, project) => total + project.scheme_count, 0),
-      completed: metricsSource.filter((project) => project.status === 'completed').length,
-    }),
-    [metricsSource],
+    () =>
+      globalProjects
+        ? {
+            all: globalProjects.length,
+            calculating: globalProjects.filter((project) => project.status === 'calculating')
+              .length,
+            schemes: globalProjects.reduce((total, project) => total + project.scheme_count, 0),
+            completed: globalProjects.filter((project) => project.status === 'completed').length,
+          }
+        : undefined,
+    [globalProjects],
   )
-  const projectCount = projects.data?.projects.length ?? 0
+  const overviewProjects = useMemo(
+    () =>
+      [...(filteredProjects ?? EMPTY_PROJECTS)]
+        .sort((left, right) => Date.parse(right.updated_at) - Date.parse(left.updated_at))
+        .slice(0, 8),
+    [filteredProjects],
+  )
   const visibleProjects =
-    variant === 'overview'
-      ? (projects.data?.projects ?? EMPTY_PROJECTS).slice(0, 8)
-      : (projects.data?.projects ?? EMPTY_PROJECTS)
+    variant === 'overview' ? overviewProjects : (filteredProjects ?? EMPTY_PROJECTS)
+  const hasFilters = Boolean(search || status)
+  const isRefreshing = projects.isFetching || allProjects.isFetching
+
+  let managementSummary = ''
+  if (variant === 'management') {
+    if (allProjects.isError) {
+      managementSummary = '项目总数读取失败'
+    } else if (allProjects.isPending || !globalProjects) {
+      managementSummary = '正在读取项目总数…'
+    } else {
+      managementSummary = `共 ${globalProjects.length} 个项目`
+    }
+
+    if (hasFilters) {
+      const filteredSummary = projects.isError
+        ? '当前筛选读取失败'
+        : projects.isPending || !filteredProjects
+          ? '正在读取当前筛选结果…'
+          : `当前筛选 ${filteredProjects.length} 个`
+      managementSummary = `${managementSummary} · ${filteredSummary}`
+    }
+  }
 
   function updateFilters(key: 'search' | 'status', value: string) {
     const next = new URLSearchParams(searchParams)
@@ -107,39 +138,79 @@ export function ProjectWorkspacePanel({ variant }: { variant: 'overview' | 'mana
         transition={{ duration: 0.18, ease: 'easeOut' }}
       >
         {variant === 'overview' && (
-          <section aria-label="项目指标" className="mt-6 grid grid-cols-2 gap-3 xl:grid-cols-4">
-            {metricCards.map((card, index) => {
-              const Icon = card.icon
-              const value =
-                card.key === 'all'
-                  ? metrics.all
-                  : card.key === 'calculating'
-                    ? metrics.calculating
-                    : card.key === 'schemes'
-                      ? metrics.schemes
-                      : metrics.completed
-              return (
-                <motion.div
-                  key={card.key}
-                  initial={reducedMotion ? false : { opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.16, delay: reducedMotion ? 0 : index * 0.035 }}
-                  className="rounded-lg border bg-white p-4 shadow-[0_1px_2px_rgba(24,24,27,0.03)]"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="text-[11px] font-medium text-[#71717a]">{card.label}</div>
-                      <div className="tnum mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-                        {value}
-                      </div>
-                    </div>
-                    <span className={`grid size-9 place-items-center rounded-lg ${card.tone}`}>
-                      <Icon className="size-4" />
-                    </span>
+          <section aria-label="项目指标" className="mt-6">
+            {allProjects.isError ? (
+              <Alert variant="destructive" className="bg-white">
+                <AlertCircle />
+                <AlertTitle>项目指标加载失败</AlertTitle>
+                <AlertDescription className="flex items-center justify-between gap-4">
+                  <span>
+                    {allProjects.error instanceof Error
+                      ? allProjects.error.message
+                      : '全局项目数据暂时不可用。'}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => void allProjects.refetch()}
+                    aria-label="重试项目指标"
+                  >
+                    重试
+                  </Button>
+                </AlertDescription>
+              </Alert>
+            ) : allProjects.isPending || !metrics ? (
+              <div
+                role="status"
+                aria-label="项目指标加载中"
+                className="grid grid-cols-2 gap-3 xl:grid-cols-4"
+              >
+                {metricCards.map((card) => (
+                  <div
+                    key={card.key}
+                    className="rounded-lg border bg-white p-4 shadow-[0_1px_2px_rgba(24,24,27,0.03)]"
+                  >
+                    <div className="text-[11px] font-medium text-[#71717a]">{card.label}</div>
+                    <Skeleton className="mt-2 h-8 w-16 sm:h-9" />
                   </div>
-                </motion.div>
-              )
-            })}
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+                {metricCards.map((card, index) => {
+                  const Icon = card.icon
+                  const value =
+                    card.key === 'all'
+                      ? metrics.all
+                      : card.key === 'calculating'
+                        ? metrics.calculating
+                        : card.key === 'schemes'
+                          ? metrics.schemes
+                          : metrics.completed
+                  return (
+                    <motion.div
+                      key={card.key}
+                      initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.16, delay: reducedMotion ? 0 : index * 0.035 }}
+                      className="rounded-lg border bg-white p-4 shadow-[0_1px_2px_rgba(24,24,27,0.03)]"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <div className="text-[11px] font-medium text-[#71717a]">{card.label}</div>
+                          <div className="tnum mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+                            {value}
+                          </div>
+                        </div>
+                        <span className={`grid size-9 place-items-center rounded-lg ${card.tone}`}>
+                          <Icon className="size-4" />
+                        </span>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            )}
           </section>
         )}
 
@@ -150,11 +221,7 @@ export function ProjectWorkspacePanel({ variant }: { variant: 'overview' | 'mana
                 {variant === 'overview' ? '最近项目' : '项目列表'}
               </h2>
               <p className="mt-1 text-xs text-[#71717a]">
-                {variant === 'overview'
-                  ? '按更新时间展示最近 8 个项目。'
-                  : projects.isPending
-                    ? '正在读取项目…'
-                    : `共 ${projectCount} 个项目`}
+                {variant === 'overview' ? '按更新时间展示最近 8 个项目。' : managementSummary}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -213,11 +280,11 @@ export function ProjectWorkspacePanel({ variant }: { variant: 'overview' | 'mana
               size="sm"
               onClick={() => {
                 void projects.refetch()
-                if (variant === 'overview') void allProjects.refetch()
+                if (hasFilters) void allProjects.refetch()
               }}
-              disabled={projects.isFetching}
+              disabled={isRefreshing}
             >
-              <RefreshCw className={projects.isFetching ? 'animate-spin' : ''} />
+              <RefreshCw className={isRefreshing ? 'animate-spin' : ''} />
               <span className="hidden sm:inline">刷新</span>
             </Button>
           </div>
@@ -226,7 +293,7 @@ export function ProjectWorkspacePanel({ variant }: { variant: 'overview' | 'mana
             projects={visibleProjects}
             loading={projects.isPending}
             error={projects.error instanceof Error ? projects.error : null}
-            hasFilters={Boolean(search || status)}
+            hasFilters={hasFilters}
             onRetry={() => void projects.refetch()}
             onClearFilters={clearFilters}
             onEnter={(project) => navigate(`/projects/${project.project_id}/calc`)}

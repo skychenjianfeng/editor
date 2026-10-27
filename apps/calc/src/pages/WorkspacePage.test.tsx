@@ -42,13 +42,13 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-function renderWorkspace() {
+function renderWorkspace(initialEntry = '/workspace') {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false, gcTime: 0 }, mutations: { retry: false } },
   })
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter initialEntries={['/workspace']}>
+      <MemoryRouter initialEntries={[initialEntry]}>
         <Routes>
           <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/projects/:projectId/calc" element={<div>项目计算页</div>} />
@@ -77,6 +77,7 @@ describe('WorkspacePage', () => {
 
     renderWorkspace()
 
+    expect(screen.getByRole('status', { name: '项目指标加载中' })).toBeInTheDocument()
     expect(await screen.findByText('滨江研发楼改造')).toBeInTheDocument()
     expect(screen.getAllByText('上海').length).toBeGreaterThan(0)
     expect(screen.getAllByText('计算中').length).toBeGreaterThan(0)
@@ -95,11 +96,12 @@ describe('WorkspacePage', () => {
   })
 
   it('shows only the eight most recent projects on the overview', async () => {
-    const manyProjects = Array.from({ length: 10 }, (_, index) => ({
+    const manyProjects = [1, 10, 2, 9, 3, 8, 4, 7, 5, 6].map((index) => ({
       ...projects[0],
-      project_id: `${index + 1}1111111-1111-4111-8111-111111111111`,
-      name: `项目 ${index + 1}`,
-      code: `PM-${String(index + 1).padStart(3, '0')}`,
+      project_id: `${index}1111111-1111-4111-8111-111111111111`,
+      name: `项目 ${index}`,
+      code: `PM-${String(index).padStart(3, '0')}`,
+      updated_at: new Date(Date.UTC(2026, 9, index)).toISOString(),
     }))
     vi.stubGlobal(
       'fetch',
@@ -114,8 +116,55 @@ describe('WorkspacePage', () => {
 
     renderWorkspace()
 
-    expect(await screen.findByText('项目 8')).toBeInTheDocument()
-    expect(screen.queryByText('项目 9')).not.toBeInTheDocument()
+    expect(await screen.findByText('项目 6')).toBeInTheDocument()
+    expect(screen.queryByText('项目 1')).not.toBeInTheDocument()
+    expect(
+      screen
+        .getAllByRole('row')
+        .map((row) => row.getAttribute('aria-label'))
+        .filter(Boolean),
+    ).toEqual([
+      '项目 10 上海 计算中',
+      '项目 9 上海 计算中',
+      '项目 8 上海 计算中',
+      '项目 7 上海 计算中',
+      '项目 6 上海 计算中',
+      '项目 5 上海 计算中',
+      '项目 4 上海 计算中',
+      '项目 3 上海 计算中',
+    ])
+  })
+
+  it('shows a retryable metrics error instead of falling back to filtered results', async () => {
+    let globalProjectRequests = 0
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = new URL(String(input), 'http://localhost')
+        if (url.searchParams.has('search')) {
+          return new Response(JSON.stringify({ projects: [projects[0]] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          })
+        }
+        globalProjectRequests += 1
+        return new Response(JSON.stringify({ detail: '全局项目读取失败' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }),
+    )
+
+    renderWorkspace('/workspace?search=%E6%BB%A8%E6%B1%9F')
+
+    expect(await screen.findByText('项目指标加载失败')).toBeInTheDocument()
+    expect(screen.getByText('全局项目读取失败')).toBeInTheDocument()
+    expect(await screen.findByText('滨江研发楼改造')).toBeInTheDocument()
+    expect(screen.queryByText('11')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: '重试项目指标' }))
+
+    await waitFor(() => expect(globalProjectRequests).toBeGreaterThan(1))
   })
 
   it('sends search and status filters to the server query', async () => {
