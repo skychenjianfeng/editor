@@ -1,5 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
+import type { ProjectRecord } from './projects'
+
 const BASE = import.meta.env.VITE_CALC_API ?? 'http://127.0.0.1:8001/api/v1'
 
 export type ApiResultItem = {
@@ -47,19 +49,7 @@ export type RunRecord = {
   control_failed: number
 }
 
-export type ProjectRecord = {
-  project_id: string
-  name: string
-  code: string
-  client: string
-  location: string
-  designer: string
-  note: string
-  created_at: string
-  updated_at: string
-  scheme_count?: number
-  schemes?: SchemeRecord[]
-}
+export type { ProjectRecord } from './projects'
 
 export type SchemeRecord = {
   scheme_id: string

@@ -7,6 +7,12 @@ import { SchemeDialog } from './SchemeDialog'
 const project: ProjectRecord = {
   project_id: '11111111-1111-4111-8111-111111111111',
   name: '示例项目',
+  region: '上海',
+  status: 'preparing',
+  status_label: '筹备中',
+  scheme_count: 0,
+  failed_control_count: 0,
+  last_calculated_at: null,
   code: 'P-01',
   client: '建设单位',
   location: '上海',
