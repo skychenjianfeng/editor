@@ -73,6 +73,7 @@ def test_tie_member_registered():
         "attached-lifting-scaffold",
         "ground-operation-platform",
         "cantilever-operation-platform",
+        "scaffold-tie-member",
     ],
 )
 def test_registered_geometry_is_specialized(module_key):
