@@ -1,7 +1,7 @@
 # 独立连墙件计算模块实施验收记录
 
-日期：2026-10-27  
-分支：`feat/scaffold-tie-member`  
+日期：2026-10-27
+分支：`feat/scaffold-tie-member`
 模块 key：`scaffold-tie-member`
 
 ## 规范与计算边界
