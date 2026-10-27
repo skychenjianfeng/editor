@@ -426,6 +426,11 @@ def _item(
 def run(params: dict[str, Any]) -> dict[str, Any]:
     p = _merged(params)
     area, _inertia, radius, _modulus = section_properties(str(p["steel"]))
+    if p["tieNetArea"] > area:
+        raise ValueError(
+            f"tieNetArea={p['tieNetArea']:.1f}mm² 不得大于 "
+            f"{p['steel']} 钢管毛截面面积 A={area:.1f}mm²"
+        )
     net_area = p["tieNetArea"] if p["tieNetArea"] > 0 else area
 
     coverage_area = p["tieVerticalSpacing"] * p["tieHorizontalSpacing"]
@@ -439,6 +444,11 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     nl = nlw + n0
 
     lam = p["tieLength"] * 1000.0 / radius
+    if lam > 250.0 + 1e-9:
+        raise ValueError(
+            f"连墙件长细比 λ={lam:.1f} 超出 JGJ 130-2011 "
+            "附录 A 表 A.0.6 的 250 上限，不能按端点值查取 φ"
+        )
     phi = phi_value(lam)
     strength_limit = 0.85 * F_DESIGN
     sigma_strength = nl * 1000.0 / net_area
@@ -447,6 +457,11 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
         27.0
         if p["scaffoldType"] == "双排悬挑" and p["H"] > 50.0
         else 40.0
+    )
+    vertical_spacing_limit = (
+        2.0
+        if p["scaffoldType"] == "双排悬挑" and p["H"] > 50.0
+        else 3.0
     )
     first_step_ok = p["tieFromFirstStep"] == "是"
     single_row = p["layout"] == "单排"
@@ -478,7 +493,10 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
             "N/mm²",
             "JGJ 130-2011 5.2.12-2",
             True,
-            f"Nl/(φA) ≤ 0.85f；λ={lam:.1f}，φ={phi:.3f}",
+            (
+                f"Nl/(φA) ≤ 0.85f；λ={lam:.1f}≤250，"
+                f"按附录 A 表 A.0.6 查取 φ={phi:.3f}"
+            ),
             ok=sigma_stability <= strength_limit + 1e-9,
         ),
         _item(
@@ -518,12 +536,21 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
                 "tie_vertical_spacing",
                 "连墙件竖向间距",
                 tie_steps,
-                3.0,
+                vertical_spacing_limit,
                 "步",
                 "JGJ 130-2011 表 6.4.2",
                 True,
-                f"tieVerticalSpacing/h={p['tieVerticalSpacing']:.2f}/{p['h']:.2f} ≤ 3 步",
-                ok=tie_steps <= 3.0 + 1e-9,
+                (
+                    f"tieVerticalSpacing/h={p['tieVerticalSpacing']:.2f}/"
+                    f"{p['h']:.2f}={tie_steps:.2f} ≤ "
+                    f"{vertical_spacing_limit:.0f} 步"
+                    + (
+                        "（双排悬挑且 H>50m）"
+                        if vertical_spacing_limit == 2.0
+                        else ""
+                    )
+                ),
+                ok=tie_steps <= vertical_spacing_limit + 1e-9,
             ),
             _item(
                 offset_number + 1,
@@ -624,17 +651,14 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 
     assumptions = [
         "Nlw=1.4wkAw、Nl=Nlw+N0 按 JGJ 130-2011 式 5.2.13、5.2.12-3；未混入 CECS 699-2020 的 1.5 系数",
-        "f=205N/mm²、Rc=8.0kN 取自 JGJ 130-2011；φ 按附录 A 表 A.0.6 查取",
+        "f=205N/mm²、Rc=8.0kN 取自 JGJ 130-2011；φ 仅按附录 A 表 A.0.6 的 λ=0～250 范围查取，超限直接报错，不截断为端点值",
+        "连墙件竖向间距一般不超过 3 步；双排悬挑且 H>50m 时按表 6.4.2 收紧为不超过 2 步",
+        "tieNetArea>0 时必须采用不大于钢管毛截面 A 的实际净截面；tieNetArea=0 时按毛截面计算并应在后续复核",
         "μz 按 GB 50009-2012 表 8.2.1 取架体高度 H；μs 按 JGJ 130-2011 封闭状况和背靠建筑规则计算",
         "连墙点覆盖面积仅作布置覆盖范围校核，不替代建筑结构本体、预埋件或连接节点设计",
         "GB 55023-2022 第4.4.6条为强制性条文，连墙件必须是可拉压的刚性构件；软拉硬撑在任何高度均判定不满足，较 JGJ 130-2011 仅限制 H>24m 更严",
         "本模块为 PmStudio 自算结果，verified=false，尚未取得同参数品茗 RTF oracle",
     ]
-    if p["tieNetArea"] == 0:
-        assumptions.insert(
-            1,
-            "tieNetArea=0，当前强度按毛截面计算；后续应以实际净截面复核",
-        )
 
     return {
         "run_id": "local",

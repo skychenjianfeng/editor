@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-27T19:50:43+08:00",
+  "generated_at": "2026-10-27T19:57:29+08:00",
   "scope": "PmStudio 自算回归，不是品茗 oracle；本套件未启动、未操控品茗软件，不得据此声称完成品茗对照或授权操作。",
   "artifact_kind": "pmsstudio-self-calculation-regression",
   "module_count": 10,
@@ -74,7 +74,7 @@
       "结果数": 29,
       "报告文件": "01_scaffold-fastener_扣件式脚手架.docx",
       "DOCX大小": 344864,
-      "SHA256": "8e7dcbc13584f73d8370e414ad8036d0807e237c10b33d05cffeb935e0726ff9",
+      "SHA256": "52ccbd09e042e06fa085eb42732a7203a1db380169995613ad42f2e2465e1a46",
       "内嵌图片数": 5,
       "结果表行数": 30
     },
@@ -112,7 +112,7 @@
       "结果数": 16,
       "报告文件": "02_scaffold-fastener-pinming_扣件式脚手架（品茗双立杆）.docx",
       "DOCX大小": 296997,
-      "SHA256": "046d303e7922ba878920ea9b8e35fc6b117ee72901368526ca0c3ee480e31354",
+      "SHA256": "d94dc41e8196ebc7ecdcda6e59318f83e0e831f123c2d89ed60578a21a38fe49",
       "内嵌图片数": 4,
       "结果表行数": 17
     },
@@ -153,8 +153,8 @@
       ],
       "结果数": 10,
       "报告文件": "03_scaffold-tie-member_连墙件计算.docx",
-      "DOCX大小": 84849,
-      "SHA256": "df3bbb11280e510892dc45407bc31b9f3c41b613af567e282f2adf61e1ee5db8",
+      "DOCX大小": 85006,
+      "SHA256": "21ffed7f7c78b168fc8816832a4b014a3c56e9528edcf22ddc1dfe94a59a8ac5",
       "内嵌图片数": 2,
       "结果表行数": 11
     },
@@ -182,7 +182,7 @@
       "结果数": 6,
       "报告文件": "04_cantilever-scaffold_型钢悬挑脚手架.docx",
       "DOCX大小": 99077,
-      "SHA256": "e3d5dcd8d204d94a1d02853b8c514fe5c66173d8ca20a611c8456145a8e16290",
+      "SHA256": "dfeb7fe8c2432d62e5a6322b8411beac831c09778c00f9ce2dd1cf42deda2980",
       "内嵌图片数": 1,
       "结果表行数": 7
     },
@@ -213,7 +213,7 @@
       "结果数": 9,
       "报告文件": "05_full-hall-scaffold_满堂脚手架.docx",
       "DOCX大小": 171377,
-      "SHA256": "10632bff0d64cbe1a699eb9606a2edb03766561e266164f2605515bb8f46508b",
+      "SHA256": "a2297f43e297426db5548d9f686180bbebdd2f6802ba73a0ed33946429736a99",
       "内嵌图片数": 2,
       "结果表行数": 10
     },
@@ -243,7 +243,7 @@
       "结果数": 8,
       "报告文件": "06_suspended-basket_高处作业吊篮.docx",
       "DOCX大小": 107015,
-      "SHA256": "a18936dacada0375ad9179865b1ab4713c0e5349e79bb9dc3eb5d081cac06063",
+      "SHA256": "7b4f7820873f9d4e45d200464c823f520eeb37a4368440f9b274ce62203507c1",
       "内嵌图片数": 1,
       "结果表行数": 9
     },
@@ -274,7 +274,7 @@
       "结果数": 9,
       "报告文件": "07_door-scaffold_门式钢管脚手架.docx",
       "DOCX大小": 156718,
-      "SHA256": "8518ed3f34f7b05e0a6778f27a58b87ae77a83443a0a82325eefa11f8385f6ad",
+      "SHA256": "8695b90e26bb7d98591e4b80ad3cd10ed800689b0ca123a9c232826f48a58204",
       "内嵌图片数": 2,
       "结果表行数": 10
     },
@@ -305,7 +305,7 @@
       "结果数": 9,
       "报告文件": "08_attached-lifting-scaffold_附着式升降脚手架.docx",
       "DOCX大小": 89683,
-      "SHA256": "858b195f8c58107b0615faa0386d98c17305d83db7a3fe1580ebdc811f8e47c7",
+      "SHA256": "8167b50c9fba892f15fde9e5fca39e72020d402b048b49279f48e8499c4a8aa2",
       "内嵌图片数": 1,
       "结果表行数": 10
     },
@@ -345,7 +345,7 @@
       "结果数": 8,
       "报告文件": "09_ground-operation-platform_落地式操作平台.docx",
       "DOCX大小": 112778,
-      "SHA256": "835556763e31485b7f446ea79cdf84af17b4eac10563120c4b0cb1fba1c6add4",
+      "SHA256": "87a2a8855c4a0d679d33b52c364cefc85412cce19b683594657eba96ae5aac7a",
       "内嵌图片数": 1,
       "结果表行数": 9
     },
@@ -375,8 +375,8 @@
       "失败项": [],
       "结果数": 9,
       "报告文件": "10_cantilever-operation-platform_悬挑式操作平台.docx",
-      "DOCX大小": 112746,
-      "SHA256": "f784ab526e3a7f3f91deb8f87634c8c1e93e312482493e502fa7141c36d7ff46",
+      "DOCX大小": 112750,
+      "SHA256": "b2e8ddf440e21e0f7078204924b9b55bbbc8b8c6a01e913ccf72c0e74dedc0cf",
       "内嵌图片数": 1,
       "结果表行数": 10
     }

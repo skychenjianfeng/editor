@@ -74,7 +74,7 @@ def test_wind_pressure_increases_axial_force():
 
 
 def test_net_area_and_tie_length_increase_stresses():
-    wide = tie.run({"tieNetArea": 600.0, "tieLength": 0.8})
+    wide = tie.run({"tieNetArea": 400.0, "tieLength": 0.8})
     narrow = tie.run({"tieNetArea": 300.0, "tieLength": 1.6})
     assert (
         _result(narrow, "tie_strength")["value"]
@@ -181,6 +181,54 @@ def test_cantilever_high_area_limit_is_27_square_metres():
     result = _result(payload, "tie_area")
     assert result["limit"] == pytest.approx(27.0)
     assert result["ok"] is False
+
+
+@pytest.mark.parametrize(
+    ("overrides", "expected_limit"),
+    [
+        ({"H": 55.0, "scaffoldType": "双排悬挑"}, 2.0),
+        ({"H": 50.0, "scaffoldType": "双排悬挑"}, 3.0),
+        ({"H": 55.0, "scaffoldType": "双排落地"}, 3.0),
+    ],
+)
+def test_tie_vertical_spacing_limit_depends_on_height_and_support_type(
+    overrides,
+    expected_limit,
+):
+    result = _result(tie.run(overrides), "tie_vertical_spacing")
+    assert result["limit"] == pytest.approx(expected_limit)
+
+
+def test_high_cantilever_tie_vertical_spacing_fails_against_two_step_limit():
+    payload = tie.run(
+        {
+            "H": 55.0,
+            "h": 1.8,
+            "scaffoldType": "双排悬挑",
+            "tieVerticalSpacing": 4.0,
+        }
+    )
+    spacing = _result(payload, "tie_vertical_spacing")
+    assert spacing["value"] == pytest.approx(2.22)
+    assert spacing["limit"] == pytest.approx(2.0)
+    assert spacing["ok"] is False
+    assert _result(payload, "tie_area")["ok"] is True
+
+
+def test_tie_length_beyond_stability_table_raises_value_error():
+    with pytest.raises(ValueError, match="250"):
+        tie.run({"tieLength": 5.0, "steel": "φ48×3.0"})
+    tie.run({"tieLength": 0.9, "steel": "φ48×3.0"})
+
+
+def test_tie_net_area_cannot_exceed_gross_section_area():
+    area = tie.section_properties("φ48×3.0")[0]
+    with pytest.raises(ValueError, match="毛截面"):
+        tie.run({"tieNetArea": area + 1.0})
+    tie.run({"tieNetArea": 0.0})
+    assert tie.run({"tieNetArea": area})["derived"]["Ac_mm2"] == pytest.approx(
+        round(area, 1)
+    )
 
 
 @pytest.mark.parametrize(

@@ -14,6 +14,9 @@
 - `Nlw=1.4*wk*Aw`；`N0=2kN`（单排）或 `3kN`（双排）。
 - `Nl<=Nv`；扣件连接另校核 `Nl<=8.0kN`。
 - 双排悬挑且高度大于 50m 时覆盖面积限值为 27m²，其余为 40m²。
+- 双排悬挑且高度大于 50m 时竖向间距限值为 2 步，其余工况为 3 步。
+- 附录 A 表 A.0.6 仅覆盖 `λ=0～250`；超限时抛出包含 `250` 的 `ValueError`，不得截断为端点值。
+- `tieNetArea>0` 时必须不大于钢管毛截面面积 `A`，否则抛出 `ValueError`。
 - `layout=单排` 只能配 `scaffoldType=单排`；`layout=双排` 只能配双排落地或双排悬挑。
 - GB 55023-2022 第 4.4.6 条为强制性条文，连墙件必须为可拉压的刚性构件；`软拉硬撑` 在任何高度均不允许。
 - 新模块 `verified=false`，不得声称已通过品茗 oracle。
@@ -28,6 +31,13 @@
 - [x] 将高度阈值型 `soft_tie_height` 改为强制构造项 `rigid_tie_construction`，软拉硬撑在任何高度均失败。
 - [x] 增加 `layout` 与 `scaffoldType` 双向一致性校验。
 - [x] 通用计算书将首步设置与刚性构造输出为“满足要求/不满足要求”，连墙件图题使用“计算图”。
+
+### 2026-10-27 规范边界补正
+
+- [x] 按 JGJ 130-2011 表 6.4.2，将双排悬挑且 `H>50m` 的竖向间距限值收紧为 2 步，其余仍为 3 步。
+- [x] 对 `λ>250` 拒绝查表，不再返回表端点稳定系数。
+- [x] 拒绝大于钢管毛截面面积的正净截面输入，并同步 assumptions 与结果 detail。
+- [x] 新增 `H=55m/h=1.8m/tieVerticalSpacing=4.0m`、`tieLength=5m`、净截面毛截面边界的 RED/GREEN 回归。
 
 ---
 
@@ -127,7 +137,7 @@ def test_wind_pressure_increases_axial_force():
 
 
 def test_net_area_and_tie_length_increase_stresses():
-    wide = tie.run({"tieNetArea": 600.0, "tieLength": 0.8})
+    wide = tie.run({"tieNetArea": 400.0, "tieLength": 0.8})
     narrow = tie.run({"tieNetArea": 300.0, "tieLength": 1.6})
     assert (
         _result(narrow, "tie_strength")["value"]
