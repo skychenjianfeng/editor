@@ -3,10 +3,14 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { useCurrentUser } from './api/auth'
 import { ApiError } from './api/client'
 import { AuthGate } from './auth/AuthGate'
+import { WorkspaceLayout } from './components/workspace/WorkspaceLayout'
 import { CalcWorkspacePage } from './pages/CalcWorkspacePage'
 import { LoginPage } from './pages/LoginPage'
+import { ProjectManagementPage } from './pages/ProjectManagementPage'
+import { RecycleBinPage } from './pages/RecycleBinPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { WorkspacePage } from './pages/WorkspacePage'
+import { WorkspaceSettingsPage } from './pages/WorkspaceSettingsPage'
 
 function RootRedirect() {
   const currentUser = useCurrentUser()
@@ -46,7 +50,12 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route element={<AuthGate />}>
-        <Route path="/workspace" element={<WorkspacePage />} />
+        <Route path="/workspace" element={<WorkspaceLayout />}>
+          <Route index element={<WorkspacePage />} />
+          <Route path="projects" element={<ProjectManagementPage />} />
+          <Route path="settings" element={<WorkspaceSettingsPage />} />
+          <Route path="recycle-bin" element={<RecycleBinPage />} />
+        </Route>
         <Route path="/projects/:projectId/calc" element={<CalcWorkspacePage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

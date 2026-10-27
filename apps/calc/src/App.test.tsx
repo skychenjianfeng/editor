@@ -88,6 +88,12 @@ describe('App routes', () => {
     expect(screen.getByText('欢迎回来')).toBeInTheDocument()
   })
 
+  it('redirects anonymous users from workspace settings to login', async () => {
+    renderApp('/workspace/settings', false)
+    expect(await screen.findByRole('button', { name: '登录' })).toBeInTheDocument()
+    expect(screen.getByText('欢迎回来')).toBeInTheDocument()
+  })
+
   it('redirects authenticated root requests to the project workspace', async () => {
     renderApp('/', true)
     expect(await screen.findByRole('heading', { name: '项目工作台' })).toBeInTheDocument()
@@ -95,7 +101,7 @@ describe('App routes', () => {
 
   it('renders the calculator only for a project route', async () => {
     renderApp(`/projects/${project.project_id}/calc`, true)
-    expect(await screen.findByText('滨江研发楼改造')).toBeInTheDocument()
+    expect((await screen.findAllByText('滨江研发楼改造')).length).toBeGreaterThanOrEqual(2)
     expect(screen.getByRole('link', { name: '返回项目工作台' })).toBeInTheDocument()
   })
 })

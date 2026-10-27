@@ -22,7 +22,6 @@ import {
 import { type ProjectCreateIntent, ProjectFormDialog } from '../components/ProjectFormDialog'
 import { ProjectTable } from '../components/ProjectTable'
 import { Button } from '../components/ui/button'
-import { WorkspaceHeader } from '../components/WorkspaceHeader'
 
 const metricCards = [
   { key: 'all', label: '全部项目', icon: FolderPlus, tone: 'text-[#52525b] bg-[#f4f4f5]' },
@@ -94,13 +93,12 @@ export function WorkspacePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f5f6] text-[#18181b]">
-      <WorkspaceHeader />
-      <motion.main
+    <>
+      <motion.div
         initial={reducedMotion ? false : { opacity: 0, y: 4 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.18, ease: 'easeOut' }}
-        className="mx-auto w-full max-w-[1480px] px-4 py-7 sm:px-6 sm:py-9"
+        className="mx-auto w-full max-w-[1480px] px-4 py-7 text-[#18181b] sm:px-6 sm:py-9"
       >
         <section className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -218,7 +216,7 @@ export function WorkspacePage() {
             onDelete={(project) => deleteMutation.mutateAsync(project.project_id)}
           />
         </section>
-      </motion.main>
+      </motion.div>
 
       <ProjectFormDialog
         open={formOpen}
@@ -229,6 +227,6 @@ export function WorkspacePage() {
         project={editingProject}
         onCreated={handleCreated}
       />
-    </div>
+    </>
   )
 }
