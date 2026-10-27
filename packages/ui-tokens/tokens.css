@@ -1,0 +1,40 @@
+/*
+ * Shared design tokens for PmStudio.
+ * Used by apps/calc today; apps/editor can adopt the same names later.
+ */
+
+:root {
+  /* shadcn-compatible surface tokens */
+  --background: #ffffff;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #e5484d;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #3e63dd;
+  --radius: 0.375rem;
+
+  /* engineering canvas */
+  --calc-shell: #f7f7f8;
+  --calc-canvas: #0b0e13;
+  --calc-grid: #1c2129;
+  --calc-up: #e5484d;
+  --calc-brace: #3e63dd;
+  --calc-dim: #30a46c;
+  --calc-warn: #f5a524;
+
+  /* typography */
+  --calc-font-sans: "Inter", "Segoe UI", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+  --calc-font-mono: "JetBrains Mono", "Cascadia Mono", Consolas, ui-monospace, monospace;
+}
