@@ -1,0 +1,350 @@
+{
+  "generated_on": "2026-10-27",
+  "scope": "Read-only scaffold capability gap analysis for PmStudio and Pinming 2027 V6.0.",
+  "app_or_install_modified": false,
+  "pmsg_started_or_operated": false,
+  "sources": {
+    "pmstudio_registry": "services/calc-api/calc_core/modules.py",
+    "pmstudio_related_modules": [
+      "services/calc-api/calc_core/scaffold_fastener.py",
+      "services/calc-api/calc_core/scaffold_fastener_pinming.py",
+      "services/calc-api/calc_core/scaffold_tie_member.py",
+      "services/calc-api/calc_core/cantilever_scaffold.py",
+      "services/calc-api/calc_core/full_hall_scaffold.py",
+      "services/calc-api/calc_core/suspended_basket.py",
+      "services/calc-api/calc_core/door_scaffold.py",
+      "services/calc-api/calc_core/attached_lifting_scaffold.py",
+      "services/calc-api/calc_core/ground_operation_platform.py",
+      "services/calc-api/calc_core/cantilever_operation_platform.py"
+    ],
+    "pinming_scheme_root_gbk": "D:\\品茗软件\\品茗建筑施工云安全计算软件2027版（V6.0）\\我的方案\\脚手架",
+    "pinming_help_manual": "oracle/pinming-cli-probe/help-parse/建筑施工云安全计算帮助手册/建筑施工云安全计算帮助手册.md"
+  },
+  "coverage_definition": {
+    "covered": "PmStudio has an independently registered module for the same primary calculation object and runnable core checks. This does not mean formulas are verified.",
+    "partial": "PmStudio covers a base structural/component chain, but the target frame system, dedicated case, or current standard scope is incomplete.",
+    "uncovered": "No registered PmStudio module implements the capability."
+  },
+  "template_catalog_stats": {
+    "scheme_config_count": 10,
+    "direct_assignments": 198,
+    "global_unique_code_config_pairs": 110,
+    "unique_numeric_codes": 84,
+    "unique_config_names": 35,
+    "warning": "Template mappings are not independent calculation modules. Codes are reused and may mean different modules in different regions."
+  },
+  "totals": {
+    "pmstudio_modules": 10,
+    "pinming_deduplicated_capabilities": 81,
+    "covered": 4,
+    "partial": 9,
+    "uncovered": 68,
+    "pmstudio_all_formula_verified": false
+  },
+  "pmstudio_modules": [
+    {
+      "key": "scaffold-fastener",
+      "title": "扣件式脚手架",
+      "category": "落地与满堂",
+      "standard": "JGJ 130-2011",
+      "verified": false
+    },
+    {
+      "key": "scaffold-fastener-pinming",
+      "title": "扣件式脚手架（品茗双立杆）",
+      "category": "落地与满堂",
+      "standard": "JGJ 130-2011",
+      "verified": false
+    },
+    {
+      "key": "scaffold-tie-member",
+      "title": "连墙件计算",
+      "category": "落地与满堂",
+      "standard": "JGJ 130-2011",
+      "verified": false
+    },
+    {
+      "key": "cantilever-scaffold",
+      "title": "型钢悬挑脚手架",
+      "category": "悬挑与升降",
+      "standard": "JGJ 130-2011",
+      "verified": false
+    },
+    {
+      "key": "full-hall-scaffold",
+      "title": "满堂脚手架",
+      "category": "落地与满堂",
+      "standard": "JGJ 130-2011",
+      "verified": false
+    },
+    {
+      "key": "suspended-basket",
+      "title": "高处作业吊篮",
+      "category": "工具式与平台",
+      "standard": "GB/T 19155-2017",
+      "verified": false
+    },
+    {
+      "key": "door-scaffold",
+      "title": "门式钢管脚手架",
+      "category": "落地与满堂",
+      "standard": "JGJ 128-2010",
+      "verified": false
+    },
+    {
+      "key": "attached-lifting-scaffold",
+      "title": "附着式升降脚手架",
+      "category": "悬挑与升降",
+      "standard": "JGJ 202-2010",
+      "verified": false
+    },
+    {
+      "key": "ground-operation-platform",
+      "title": "落地式操作平台",
+      "category": "工具式与平台",
+      "standard": "JGJ 80-2016",
+      "verified": false
+    },
+    {
+      "key": "cantilever-operation-platform",
+      "title": "悬挑式操作平台",
+      "category": "工具式与平台",
+      "standard": "JGJ 80-2016",
+      "verified": false
+    }
+  ],
+  "scheme_regions": [
+    {
+      "region": "全国",
+      "bytes": 8191,
+      "direct_assignments": 58,
+      "unique_direct_codes": 58,
+      "unique_code_config_pairs": 58,
+      "direct_codes": [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1011, 1012, 1013, 1015, 1018, 1019, 1020, 1022, 1026, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1037, 1038, 1039, 1042, 1050, 1051, 1052, 1054, 1055, 1056, 1061, 1062, 1063, 1064, 1065, 1066, 1067, 1068, 1069, 1070, 1071, 1072, 1073, 1074, 1075, 1079, 1080, 1091, 1092, 1093, 1094, 1095, 1096, 1097],
+      "notes": "National base; direct_codes list excludes codes referenced only in ConfigFileModuleInfo groups."
+    },
+    {
+      "region": "江苏",
+      "bytes": 6182,
+      "direct_assignments": 43,
+      "unique_direct_codes": 42,
+      "unique_code_config_pairs": 43,
+      "direct_codes": [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1010, 1011, 1012, 1013, 1015, 1017, 1018, 1019, 1020, 1022, 1026, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1036, 1037, 1038, 1039, 1061, 1069, 1070, 1071, 1072, 1073, 1074, 1075, 1076, 1077, 1078, 1079]
+    },
+    {
+      "region": "上海",
+      "bytes": 4941,
+      "direct_assignments": 38,
+      "unique_direct_codes": 38,
+      "unique_code_config_pairs": 38,
+      "direct_codes": [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1010, 1011, 1012, 1013, 1015, 1017, 1018, 1019, 1020, 1022, 1026, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1036, 1037, 1038, 1039, 1068, 1069, 1070, 1071, 1072, 1073, 1074, 1075]
+    },
+    {
+      "region": "浙江",
+      "bytes": 2206,
+      "direct_assignments": 15,
+      "unique_direct_codes": 15,
+      "unique_code_config_pairs": 15,
+      "direct_codes": [1068, 1069, 1070, 1071, 1072, 1073, 1074, 1075, 1076, 1077, 1078, 1079, 1080, 1081, 1082]
+    },
+    {
+      "region": "山东",
+      "bytes": 1947,
+      "direct_assignments": 12,
+      "unique_direct_codes": 8,
+      "unique_code_config_pairs": 8,
+      "direct_codes": [1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017]
+    },
+    {
+      "region": "广东",
+      "bytes": 1699,
+      "direct_assignments": 12,
+      "unique_direct_codes": 11,
+      "unique_code_config_pairs": 11,
+      "direct_codes": [4601, 4602, 4603, 4604, 4605, 4606, 4607, 4608, 4609, 4610, 4611]
+    },
+    {
+      "region": "重庆",
+      "bytes": 1349,
+      "direct_assignments": 7,
+      "unique_direct_codes": 5,
+      "unique_code_config_pairs": 5,
+      "direct_codes": [1050, 1051, 1052, 1055, 1063]
+    },
+    {
+      "region": "北京",
+      "bytes": 895,
+      "direct_assignments": 5,
+      "unique_direct_codes": 5,
+      "unique_code_config_pairs": 5,
+      "direct_codes": [1006, 1033, 1052, 1055, 1063]
+    },
+    {
+      "region": "湖北",
+      "bytes": 856,
+      "direct_assignments": 5,
+      "unique_direct_codes": 5,
+      "unique_code_config_pairs": 5,
+      "direct_codes": [4500, 4501, 4502, 4503, 4504]
+    },
+    {
+      "region": "福建",
+      "bytes": 689,
+      "direct_assignments": 3,
+      "unique_direct_codes": 3,
+      "unique_code_config_pairs": 3,
+      "direct_codes": [1006, 1033, 1052]
+    }
+  ],
+  "help_manual_module_sections": {
+    "公共模块": ["连墙件计算", "脚手架架在楼板上"],
+    "落地式脚手架": ["扣件式脚手架", "门式脚手架", "双排外竹脚手架", "碗扣式脚手架", "木脚手架", "盘扣式脚手架", "多排脚手架"],
+    "防护棚": ["防护棚", "斜道", "悬挑防护棚", "型钢悬挑防护棚"],
+    "悬挑式脚手架": ["三角形钢管悬挑脚手架", "型钢悬挑脚手架(扣件式)", "型钢悬挑脚手架(碗扣式)", "型钢悬挑脚手架(门式)", "型钢悬挑脚手架(盘扣式)", "型钢悬挑脚手架(阳角B)", "多排悬挑架主梁验算", "搁置主梁验算"],
+    "花篮螺栓悬挑架": ["花篮螺栓悬挑架(扣件式)", "花篮螺栓悬挑架(碗扣式)", "花篮螺栓悬挑架(盘扣式)", "花篮螺栓悬挑架(阳角整体计算)", "花篮螺栓悬挑架(门式)", "多排悬挑架主梁验算(花篮螺栓式)", "搁置主梁验算(花篮螺栓式)"],
+    "工具式脚手架": ["附着升降脚手架", "导轨式附着升降脚手架/全钢爬架", "悬挂式吊篮", "三角形外挂架"],
+    "现场施工平台": ["盘扣式操作平台", "盘扣式卸料平台", "钢管落地卸料平台", "型钢悬挑卸料平台", "满堂脚手架", "满堂支撑架", "移动操作平台(扣件式)", "移动操作平台(盘扣式)", "移动操作平台(门式)", "临边防护栏杆", "井道操作平台"]
+  },
+  "merge_rules": [
+    "Normalize punctuation, full-width parentheses, whitespace, and typo variant 型钢悬挑脚手架架(盘扣式).",
+    "Merge 悬挂式吊篮 with 标准吊篮 at the generic-basket capability level; preserve dedicated suspension variants separately.",
+    "Merge 施工升降机卸料平台 and 施工升降机卸料平台(扣件式).",
+    "Merge 多排悬挑架主梁验算 with the clarified 无联梁 name.",
+    "Merge 花篮螺栓多排悬挑架(无联梁) with 多排悬挑架主梁验算(花篮螺栓式).",
+    "Merge 花篮螺栓多排悬挑架(有联梁) with 多排悬挑架联梁悬挑(花篮螺栓式).",
+    "Merge 上拉型钢悬挑架 with 上拉式悬挑承力架 by matching structural subtype.",
+    "Fold the manual changelog item 盘扣式脚手架搭设防护棚 into 防护棚 and 电梯井道搭设盘扣式操作平台 into 井道操作平台 because no unique SchemeConfig code mapping is proven."
+  ],
+  "unresolved_mappings": [
+    {
+      "codes": [1035],
+      "regions": ["江苏", "全国", "上海"],
+      "issue": "Declared as 连墙件计算 but has no direct code=config assignment."
+    },
+    {
+      "code": 1079,
+      "issue": "Same code means 挑梁式悬挑承力架(盘扣式) in 江苏, 拉杆式悬挑脚手架(阳角整体计算) in 浙江, and appears as an undeclared 脚手架_盘扣式 assignment in 全国/江苏."
+    },
+    {
+      "code": 1080,
+      "issue": "National meaning is 三角形外挂架; Zhejiang meaning is 拉杆式悬挑脚手架(门式)."
+    },
+    {
+      "codes": [1014, 1015, 1017],
+      "issue": "National/Jiangsu/Shanghai meanings differ from Shandong uses."
+    },
+    {
+      "codes": [1010, 1011, 1012, 1013],
+      "issue": "Shandong uses these codes for different steel-cantilever submodules than Jiangsu/national/Shanghai."
+    },
+    {
+      "codes": [1091, 1092, 1093, 1094],
+      "issue": "Direct assignments exist in national config without an adjacent module-name declaration; names are not inferred."
+    },
+    {
+      "code": 1097,
+      "issue": "Declared as 爬架临时支撑平台(型钢悬挑) but assigned to config name 爬架临时支撑平台(扣件式)."
+    }
+  ],
+  "pinming_capabilities": [
+    {"name":"标准吊篮","category":"工具式脚手架","template_codes":["1015@江苏","1015@全国","1015@上海"],"status":"covered","pmstudio_modules":["suspended-basket"],"priority":"P0","note":"Generic basket capability; dedicated suspension variants remain separate."},
+    {"name":"侧埋式多排悬挑架(无纵向钢梁)","category":"地区专用悬挑","template_codes":["4503@湖北"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"侧埋式多排悬挑架(有纵向钢梁)","category":"地区专用悬挑","template_codes":["4504@湖北"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"侧埋式悬挑脚手架(扣件式)","category":"地区专用悬挑","template_codes":["4500@湖北"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"侧埋式悬挑脚手架(盘扣式)","category":"地区专用悬挑","template_codes":["4501@湖北"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"侧埋式悬挑脚手架(阳角整体计算)","category":"地区专用悬挑","template_codes":["4502@湖北"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"吊篮(女儿墙卡钳)","category":"工具式脚手架","template_codes":["1068@全国","1068@上海","1068@浙江"],"status":"uncovered","pmstudio_modules":[],"priority":"P2","note":"Generic basket parameters are insufficient to claim the dedicated support model."},
+    {"name":"吊篮(悬挂装置刚性固定)","category":"工具式脚手架","template_codes":["1073@全国","1073@上海","1073@浙江"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"吊篮(悬挂装置后捆绑式固定)","category":"工具式脚手架","template_codes":["1074@全国","1074@上海","1074@浙江"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"吊篮(悬挂装置后拉钢丝绳固定)","category":"工具式脚手架","template_codes":["1075@全国","1075@上海","1075@浙江"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"吊篮(悬挂装置前搁置点)","category":"工具式脚手架","template_codes":["1070@全国","1070@上海","1070@浙江"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"吊篮(悬挂装置前梁加长)","category":"工具式脚手架","template_codes":["1071@全国","1071@上海","1071@浙江"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"吊篮(悬挂装置增高)","category":"工具式脚手架","template_codes":["1072@全国","1072@上海","1072@浙江"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"多排脚手架","category":"落地式脚手架","template_codes":["1007@江苏","1007@全国","1007@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"多排悬挑架联梁悬挑(花篮螺栓式)","category":"花篮螺栓悬挑","template_codes":["1065@全国"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"多排悬挑架主梁验算(花篮螺栓式)","category":"花篮螺栓悬挑","template_codes":["1055@北京","1055@重庆","1055@全国"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"多排悬挑架主梁验算(无联梁)","category":"悬挑式脚手架","template_codes":["1011@江苏","1011@全国","1011@上海","4610@广东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"多排悬挑架主梁验算(有联梁)","category":"悬挑式脚手架","template_codes":["1066@全国","4607@广东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"防护棚","category":"防护棚","template_codes":["1022@江苏","1022@全国","1022@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"附着升降脚手架","category":"工具式脚手架","template_codes":["1014@江苏","1014@全国","1014@上海"],"status":"partial","pmstudio_modules":["attached-lifting-scaffold"],"priority":"P0","note":"Simplified checks exist; full spatial analysis, deformation, connection details and suspension-beam support checks remain gaps."},
+    {"name":"钢管落地卸料平台","category":"现场施工平台","template_codes":["1018@江苏","1018@全国","1018@上海"],"status":"partial","pmstudio_modules":["ground-operation-platform"],"priority":"P0","note":"Only the generic receiving-platform branch exists."},
+    {"name":"搁置主梁验算","category":"悬挑式脚手架","template_codes":["1028@江苏","1028@全国","1028@上海","4611@广东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"搁置主梁验算(花篮螺栓式)","category":"花篮螺栓悬挑","template_codes":["1056@全国"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"花篮螺栓悬挑架(扣件式)","category":"花篮螺栓悬挑","template_codes":["1050@北京","1050@重庆","1050@全国"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"花篮螺栓悬挑架(门式)","category":"花篮螺栓悬挑","template_codes":["1054@全国"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"花篮螺栓悬挑架(盘扣式)","category":"花篮螺栓悬挑","template_codes":["1052@北京","1052@重庆","1052@福建","1052@全国"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"花篮螺栓悬挑架(碗扣式)","category":"花篮螺栓悬挑","template_codes":["1051@北京","1051@重庆","1051@全国"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"花篮螺栓悬挑架(阳角整体计算)","category":"花篮螺栓悬挑","template_codes":["1063@北京","1063@重庆","1063@全国"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"脚手架架在楼板上","category":"公共模块","template_codes":["1025@江苏","1025@全国","1025@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P0","note":"Referenced through ConfigFileModuleInfo; no direct assignment."},
+    {"name":"井道操作平台","category":"现场施工平台","template_codes":[],"status":"uncovered","pmstudio_modules":[],"priority":"P1","note":"Independent help-manual chapter; no proven unique SchemeConfig code."},
+    {"name":"扣件式脚手架","category":"落地式脚手架","template_codes":["1001@江苏","1001@全国","1001@上海"],"status":"covered","pmstudio_modules":["scaffold-fastener","scaffold-fastener-pinming"],"priority":"P0"},
+    {"name":"拉杆式多排悬挑架(无纵向钢梁)","category":"地区专用悬挑","template_codes":["1081@浙江","4605@广东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"拉杆式多排悬挑架(有纵向钢梁)","category":"地区专用悬挑","template_codes":["1082@浙江","4602@广东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"拉杆式悬挑脚手架(扣件式)","category":"地区专用悬挑","template_codes":["1076@浙江","4603@广东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"拉杆式悬挑脚手架(门式)","category":"地区专用悬挑","template_codes":["1080@浙江"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"拉杆式悬挑脚手架(盘扣式)","category":"地区专用悬挑","template_codes":["1078@浙江","4604@广东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"拉杆式悬挑脚手架(碗扣式)","category":"地区专用悬挑","template_codes":["1077@浙江"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"拉杆式悬挑脚手架(阳角整体计算)","category":"地区专用悬挑","template_codes":["1079@浙江","4601@广东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"连墙件计算","category":"公共模块","template_codes":["1035@江苏","1035@全国","1035@上海"],"status":"covered","pmstudio_modules":["scaffold-tie-member"],"priority":"P0","note":"Standalone JGJ 130-2011 implementation; still unverified against a same-parameter Pinming RTF."},
+    {"name":"临边防护栏杆","category":"公共模块","template_codes":[],"status":"uncovered","pmstudio_modules":[],"priority":"P1","note":"Independent help-manual chapter; no proven unique SchemeConfig code."},
+    {"name":"满堂脚手架","category":"现场施工平台","template_codes":["1030@江苏","1030@全国","1030@上海"],"status":"covered","pmstudio_modules":["full-hall-scaffold"],"priority":"P0"},
+    {"name":"满堂支撑架","category":"现场施工平台","template_codes":["1031@江苏","1031@全国","1031@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P1","note":"Existing full-hall module is an access scaffold, not a formwork support frame."},
+    {"name":"门式脚手架","category":"落地式脚手架","template_codes":["1002@江苏","1002@全国","1002@上海"],"status":"partial","pmstudio_modules":["door-scaffold"],"priority":"P0","note":"Primary object exists, but PmStudio registers JGJ 128-2010 while the help manual also cites JGJ/T 128-2019."},
+    {"name":"木脚手架","category":"落地式脚手架","template_codes":["1005@江苏","1005@全国","1005@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"爬架临时支撑平台(扣件式)","category":"工具式脚手架","template_codes":["1095@全国"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"爬架临时支撑平台(盘扣式)","category":"工具式脚手架","template_codes":["1096@全国"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"爬架临时支撑平台(型钢悬挑)","category":"工具式脚手架","template_codes":["1097@全国"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"盘扣式操作平台","category":"现场施工平台","template_codes":[],"status":"partial","pmstudio_modules":["ground-operation-platform"],"priority":"P0","note":"Only a generic ground-platform skeleton exists; disc-lock frame and node rules are absent."},
+    {"name":"盘扣式脚手架","category":"落地式脚手架","template_codes":["1006@北京","1006@福建","1006@江苏","1006@全国","1006@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P0"},
+    {"name":"盘扣式卸料平台","category":"现场施工平台","template_codes":["1067@全国"],"status":"partial","pmstudio_modules":["ground-operation-platform"],"priority":"P0","note":"Generic receiving-platform branch only; no disc-lock-specific model."},
+    {"name":"全钢附着升降脚手架","category":"工具式脚手架","template_codes":["1062@全国"],"status":"partial","pmstudio_modules":["attached-lifting-scaffold"],"priority":"P0","note":"Generic attached-lifting model only; no dedicated full-steel climbing-formwork system."},
+    {"name":"三角形钢管悬挑脚手架","category":"悬挑式脚手架","template_codes":["1008@江苏","1008@全国","1008@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"三角形外挂架","category":"工具式脚手架","template_codes":["1017@江苏","1017@上海","1080@全国"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"上拉式多排悬挑承力架(无纵向钢梁)","category":"地区专用悬挑","template_codes":["1074@江苏","1016@山东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"上拉式多排悬挑承力架(有纵向钢梁)","category":"地区专用悬挑","template_codes":["1071@江苏"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"上拉式悬挑承力架(扣件式)","category":"地区专用悬挑","template_codes":["1072@江苏","1014@山东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"上拉式悬挑承力架(盘扣式)","category":"地区专用悬挑","template_codes":["1073@江苏","1015@山东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"上拉式悬挑承力架(阳角整体计算)","category":"地区专用悬挑","template_codes":["1070@江苏","1017@山东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"施工升降机卸料平台","category":"现场施工平台","template_codes":["1020@江苏","1020@全国","1020@上海"],"status":"partial","pmstudio_modules":["ground-operation-platform"],"priority":"P0","note":"Generic receiving-platform branch only."},
+    {"name":"双排外竹脚手架","category":"落地式脚手架","template_codes":["1003@江苏","1003@全国","1003@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"挑梁式多排悬挑承力架(无纵向钢梁)","category":"地区专用悬挑","template_codes":["1077@江苏"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"挑梁式多排悬挑承力架(有纵向钢梁)","category":"地区专用悬挑","template_codes":["1076@江苏"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"挑梁式悬挑承力架(扣件式)","category":"地区专用悬挑","template_codes":["1078@江苏"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"挑梁式悬挑承力架(盘扣式)","category":"地区专用悬挑","template_codes":["1079@江苏"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"挑梁式悬挑承力架(阳角整体计算)","category":"地区专用悬挑","template_codes":["1075@江苏"],"status":"uncovered","pmstudio_modules":[],"priority":"P2"},
+    {"name":"碗扣式脚手架","category":"落地式脚手架","template_codes":["1004@江苏","1004@全国","1004@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"斜道","category":"防护棚","template_codes":["1029@江苏","1029@全国","1029@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"型钢悬挑防护棚","category":"防护棚","template_codes":["1034@江苏","1034@全国","1034@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"型钢悬挑脚手架(多排主梁计算)","category":"悬挑式脚手架","template_codes":["1012@山东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"型钢悬挑脚手架(扣件式)","category":"悬挑式脚手架","template_codes":["1012@江苏","1012@全国","1012@上海","1010@山东","4608@广东"],"status":"partial","pmstudio_modules":["cantilever-scaffold"],"priority":"P0","note":"Only the steel cantilever beam/anchor chain is implemented; the full upper coupler scaffold is absent."},
+    {"name":"型钢悬挑脚手架(门式)","category":"悬挑式脚手架","template_codes":["1026@江苏","1026@全国","1026@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"型钢悬挑脚手架(盘扣式)","category":"悬挑式脚手架","template_codes":["1033@北京","1033@福建","1033@江苏","1033@全国","1033@上海","1011@山东","4609@广东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"型钢悬挑脚手架(碗扣式)","category":"悬挑式脚手架","template_codes":["1013@江苏","1013@全国","1013@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"型钢悬挑脚手架(阳角整体计算)","category":"悬挑式脚手架","template_codes":["1061@江苏","1061@全国","1061@上海","1013@山东","4606@广东"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"型钢悬挑脚手架(阳角A)","category":"悬挑式脚手架","template_codes":["1010@江苏"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"型钢悬挑脚手架(阳角B)","category":"悬挑式脚手架","template_codes":["1036@江苏"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"型钢悬挑卸料平台","category":"现场施工平台","template_codes":["1019@江苏","1019@全国","1019@上海"],"status":"partial","pmstudio_modules":["cantilever-operation-platform"],"priority":"P0","note":"Main/secondary beam, deck, rope and anchorage checks exist; all parallel/perpendicular wall construction branches are not complete."},
+    {"name":"悬挑防护棚","category":"防护棚","template_codes":["1032@江苏","1032@全国","1032@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"移动操作平台(扣件式)","category":"现场施工平台","template_codes":["1037@江苏","1037@全国","1037@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P0"},
+    {"name":"移动操作平台(门式)","category":"现场施工平台","template_codes":["1039@江苏","1039@全国","1039@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"},
+    {"name":"移动操作平台(盘扣式)","category":"现场施工平台","template_codes":["1038@江苏","1038@全国","1038@上海"],"status":"uncovered","pmstudio_modules":[],"priority":"P1"}
+  ],
+  "priority_summary": {
+    "P0": [
+      "Harden and verify the three covered capabilities before claiming parity.",
+      "Complete steel cantilever coupler scaffold, disc-lock landed scaffold, public tie check, slab-support check, ground-platform specializations, and coupler moving platform."
+    ],
+    "P1": [
+      "Full-hall support, multi-row scaffold, remaining steel-cantilever frame variants, basket-bolt variants, protection sheds, ramp, upper-pull/tension-rod systems, shaft platform and edge rail."
+    ],
+    "P2": [
+      "Regional side-embedded and cantilever-bearing systems, bamboo/wood scaffolds, triangular systems, dedicated hanging-basket support variants, and climbing temporary support platforms."
+    ]
+  },
+  "verification_boundary": [
+    "This analysis did not run Pmsg or any Pinming calculation.",
+    "PmStudio modules are implementation coverage only; all 10 registry entries remain verified=false.",
+    "The 81 count is a unified capability directory, not the number of SchemeConfig assignments.",
+    "No formula or result equivalence is claimed."
+  ]
+}

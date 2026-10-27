@@ -1,6 +1,6 @@
 # 独立连墙件计算模块 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** 新增 `scaffold-tie-member` 独立模块，按 JGJ 130-2011 完成连墙件计算、四视图和 DOCX 导出，同时保持现有九模块行为不变。
 
@@ -38,7 +38,7 @@
   - `run(params: dict[str, Any]) -> dict[str, Any]`
   - `scaffold_fastener.section_properties(steel: str) -> tuple[float, float, float, float]`
 
-- [ ] **Step 1: 写内核失败测试**
+- [x] **Step 1: 写内核失败测试**
 
 ```python
 # services/calc-api/tests/test_scaffold_tie_member.py
@@ -188,7 +188,7 @@ def test_invalid_parameters_raise_value_error(overrides):
         tie.run(overrides)
 ```
 
-- [ ] **Step 2: 运行测试确认 RED**
+- [x] **Step 2: 运行测试确认 RED**
 
 Run:
 
@@ -198,7 +198,7 @@ python -m pytest tests/test_scaffold_tie_member.py -q
 
 Expected: FAIL because `calc_core.scaffold_tie_member` does not exist.
 
-- [ ] **Step 3: 暴露现有截面函数**
+- [x] **Step 3: 暴露现有截面函数**
 
 在 `scaffold_fastener.py` 现有 `_section()` 后增加兼容包装，并让 `run()` 继续使用原函数：
 
@@ -208,7 +208,7 @@ def section_properties(steel: str) -> tuple[float, float, float, float]:
     return _section(steel)
 ```
 
-- [ ] **Step 4: 实现最小内核**
+- [x] **Step 4: 实现最小内核**
 
 在 `scaffold_tie_member.py` 中实现：
 
@@ -269,7 +269,7 @@ area_limit = 27.0 if p["scaffoldType"] == "双排悬挑" and p["H"] > 50 else 40
 
 结果必须包含测试列出的全部条目；非扣件连接时不追加 `tie_coupler_slip`。所有构造判定显式传入 `ok=`，不要依赖默认比较方向。
 
-- [ ] **Step 5: 运行目标测试确认 GREEN**
+- [x] **Step 5: 运行目标测试确认 GREEN**
 
 ```powershell
 python -m pytest tests/test_scaffold_tie_member.py -q
@@ -277,7 +277,7 @@ python -m pytest tests/test_scaffold_tie_member.py -q
 
 Expected: all tests PASS.
 
-- [ ] **Step 6: 提交**
+- [x] **Step 6: 提交**
 
 ```powershell
 git add services/calc-api/calc_core/scaffold_tie_member.py services/calc-api/calc_core/scaffold_fastener.py services/calc-api/tests/test_scaffold_tie_member.py
@@ -298,7 +298,7 @@ git commit -m "feat: add standalone tie member calculation core"
 - Consumes: Task 1 的 `scaffold_tie_member.param_spec/run`.
 - Produces: registry key `scaffold-tie-member`；`SCAFFOLD_MODULE_KEYS` 共 10 项。
 
-- [ ] **Step 1: 先改测试期望为 RED**
+- [x] **Step 1: 先改测试期望为 RED**
 
 在 `test_registry.py` 的精确集合中加入 `"scaffold-tie-member"`，并新增：
 
@@ -315,7 +315,7 @@ def test_tie_member_registered():
 
 把 `test_scaffold_suite.py` 中的 `9` 改为 `10`，测试名改为 `test_suite_generates_ten_utf8_named_reports_manifest_and_qa`。
 
-- [ ] **Step 2: 运行测试确认 RED**
+- [x] **Step 2: 运行测试确认 RED**
 
 ```powershell
 python -m pytest tests/test_registry.py tests/test_scaffold_suite.py -q
@@ -323,7 +323,7 @@ python -m pytest tests/test_registry.py tests/test_scaffold_suite.py -q
 
 Expected: FAIL because the registry and suite still contain nine modules.
 
-- [ ] **Step 3: 注册并更新套件**
+- [x] **Step 3: 注册并更新套件**
 
 在 `modules.py` 导入 `scaffold_tie_member` 并注册：
 
@@ -345,7 +345,7 @@ SCAFFOLD_TIE_MEMBER = registry.register(
 
 在 `SCAFFOLD_MODULE_KEYS` 的扣件式模块之后加入 `"scaffold-tie-member"`，并把模块数量文案从 9 改为 10。
 
-- [ ] **Step 4: 运行测试确认 GREEN**
+- [x] **Step 4: 运行测试确认 GREEN**
 
 ```powershell
 python -m pytest tests/test_registry.py tests/test_scaffold_suite.py -q
@@ -353,7 +353,7 @@ python -m pytest tests/test_registry.py tests/test_scaffold_suite.py -q
 
 Expected: all tests PASS.
 
-- [ ] **Step 5: 提交**
+- [x] **Step 5: 提交**
 
 ```powershell
 git add services/calc-api/calc_core/modules.py services/calc-api/calc_core/scaffold_suite.py services/calc-api/tests/test_registry.py services/calc-api/tests/test_scaffold_suite.py
@@ -374,7 +374,7 @@ git commit -m "feat: register tie member in scaffold catalog"
 - Consumes: params from Task 1.
 - Produces: `build_tie_member_geometry(params: dict[str, Any], view: str) -> dict[str, Any]`.
 
-- [ ] **Step 1: 写四视图失败测试**
+- [x] **Step 1: 写四视图失败测试**
 
 ```python
 # services/calc-api/tests/test_drawing_tie_member.py
@@ -424,7 +424,7 @@ def test_tie_member_png_and_dxf_export_are_valid():
 
 同时在 `test_registry.py` 的专用几何参数化列表加入 `"scaffold-tie-member"`。
 
-- [ ] **Step 2: 确认 RED**
+- [x] **Step 2: 确认 RED**
 
 ```powershell
 python -m pytest tests/test_drawing_tie_member.py tests/test_registry.py -q
@@ -432,7 +432,7 @@ python -m pytest tests/test_drawing_tie_member.py tests/test_registry.py -q
 
 Expected: FAIL because the dispatcher still emits generic schematic geometry.
 
-- [ ] **Step 3: 实现专用几何并分派**
+- [x] **Step 3: 实现专用几何并分派**
 
 `drawing_tie_member.py` 提供四个视图：
 
@@ -452,7 +452,7 @@ if module_key == "scaffold-tie-member":
 
 使用现有 `_line/_text/_payload` 等几何契约；不得新增 DXF 无法识别的 item type。
 
-- [ ] **Step 4: 确认 GREEN**
+- [x] **Step 4: 确认 GREEN**
 
 ```powershell
 python -m pytest tests/test_drawing_tie_member.py tests/test_registry.py -q
@@ -460,7 +460,7 @@ python -m pytest tests/test_drawing_tie_member.py tests/test_registry.py -q
 
 Expected: all tests PASS.
 
-- [ ] **Step 5: 提交**
+- [x] **Step 5: 提交**
 
 ```powershell
 git add services/calc-api/calc_core/drawing_tie_member.py services/calc-api/calc_core/drawing.py services/calc-api/tests/test_drawing_tie_member.py services/calc-api/tests/test_registry.py
@@ -480,7 +480,7 @@ git commit -m "feat: add tie member drawing views"
 - Consumes: Task 1 payload and Task 3 `drawing.export_png`.
 - Produces: `build_scaffold_figures("scaffold-tie-member", payload)` 返回正立面和平面两张 PNG。
 
-- [ ] **Step 1: 写失败测试**
+- [x] **Step 1: 写失败测试**
 
 在 `MODULE_TITLES` 相关测试列表加入 `"scaffold-tie-member"`，并新增：
 
@@ -503,7 +503,7 @@ assert "连墙件竖向间距" in "\n".join(
 )
 ```
 
-- [ ] **Step 2: 确认 RED**
+- [x] **Step 2: 确认 RED**
 
 ```powershell
 python -m pytest tests/test_scaffold_report_figures.py -q
@@ -511,7 +511,7 @@ python -m pytest tests/test_scaffold_report_figures.py -q
 
 Expected: FAIL because the module has no report figures or Chinese parameter mapping.
 
-- [ ] **Step 3: 实现图题和标签**
+- [x] **Step 3: 实现图题和标签**
 
 在 `MODULE_TITLES` 加入：
 
@@ -558,7 +558,7 @@ for key, value in params.items():
 header = ["参数", "取值", "单位"] if include_unit else ["参数", "取值"]
 ```
 
-- [ ] **Step 4: 确认 GREEN**
+- [x] **Step 4: 确认 GREEN**
 
 ```powershell
 python -m pytest tests/test_scaffold_report_figures.py -q
@@ -566,7 +566,7 @@ python -m pytest tests/test_scaffold_report_figures.py -q
 
 Expected: all tests PASS.
 
-- [ ] **Step 5: 提交**
+- [x] **Step 5: 提交**
 
 ```powershell
 git add services/calc-api/calc_core/scaffold_report_figures.py services/calc-api/calc_core/report.py services/calc-api/tests/test_scaffold_report_figures.py
@@ -586,7 +586,7 @@ git commit -m "feat: add tie member report figures and labels"
 - Consumes: final registry and test evidence.
 - Produces: 当前模块数 10、已覆盖 4、部分覆盖 9、未覆盖 68 的一致记录。
 
-- [ ] **Step 1: 更新差距数据**
+- [x] **Step 1: 更新差距数据**
 
 - `PmStudio 当前注册脚手架模块` 改为 10。
 - `scaffold-tie-member` 加入模块表。
@@ -594,7 +594,7 @@ git commit -m "feat: add tie member report figures and labels"
 - 汇总改为：已覆盖 4、部分覆盖 9、未覆盖 68。
 - JSON 的 `pmstudio_modules` 和对应能力映射同步，不改变模板编码证据。
 
-- [ ] **Step 2: 写实施验收记录**
+- [x] **Step 2: 写实施验收记录**
 
 `docs/qa/2026-10-27-tie-member-implementation.md` 写明：
 
@@ -604,7 +604,7 @@ git commit -m "feat: add tie member report figures and labels"
 - `verified=false`，尚无品茗同参数 RTF。
 - PmStudio 自算结果不是品茗 oracle。
 
-- [ ] **Step 3: 校验文档和数据一致性**
+- [x] **Step 3: 校验文档和数据一致性**
 
 ```powershell
 $j=Get-Content 'oracle/pinming-cli-probe/scaffold-module-gap.json' -Raw | ConvertFrom-Json
@@ -616,7 +616,7 @@ $j=Get-Content 'oracle/pinming-cli-probe/scaffold-module-gap.json' -Raw | Conver
 
 Expected: `10`、`4`、`9`、`68`；能力总数仍为 81。
 
-- [ ] **Step 4: 提交**
+- [x] **Step 4: 提交**
 
 ```powershell
 git add docs/qa/2026-10-27-scaffold-module-gap.md oracle/pinming-cli-probe/scaffold-module-gap.json docs/qa/2026-10-27-tie-member-implementation.md
