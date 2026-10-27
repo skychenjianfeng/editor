@@ -83,10 +83,39 @@ describe('WorkspacePage', () => {
     expect(screen.getByText('计算方案')).toBeInTheDocument()
     expect(screen.getByText('11')).toBeInTheDocument()
     expect(screen.getByText('PM-018')).toBeInTheDocument()
+    expect(screen.getByText('最近项目')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: '查看全部项目' })).toHaveAttribute(
+      'href',
+      '/workspace/projects',
+    )
 
     const row = screen.getByRole('row', { name: /滨江研发楼改造/ })
     fireEvent.keyDown(row, { key: 'Enter' })
     expect(await screen.findByText('项目计算页')).toBeInTheDocument()
+  })
+
+  it('shows only the eight most recent projects on the overview', async () => {
+    const manyProjects = Array.from({ length: 10 }, (_, index) => ({
+      ...projects[0],
+      project_id: `${index + 1}1111111-1111-4111-8111-111111111111`,
+      name: `项目 ${index + 1}`,
+      code: `PM-${String(index + 1).padStart(3, '0')}`,
+    }))
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ projects: manyProjects }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
+      ),
+    )
+
+    renderWorkspace()
+
+    expect(await screen.findByText('项目 8')).toBeInTheDocument()
+    expect(screen.queryByText('项目 9')).not.toBeInTheDocument()
   })
 
   it('sends search and status filters to the server query', async () => {
