@@ -101,7 +101,9 @@ describe('App routes', () => {
 
   it('renders the calculator only for a project route', async () => {
     renderApp(`/projects/${project.project_id}/calc`, true)
-    expect((await screen.findAllByText('滨江研发楼改造')).length).toBeGreaterThanOrEqual(2)
+    expect(
+      await screen.findByRole('link', { name: '返回项目工作台：滨江研发楼改造' }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('link', { name: '返回项目工作台' })).toBeInTheDocument()
   })
 })
